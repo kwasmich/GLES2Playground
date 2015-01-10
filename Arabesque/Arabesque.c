@@ -498,9 +498,9 @@ static void setIdle( const bool in_IDLE ) {
 
 
 static void loadShaders() {
-    GLuint vertShaderObject = createShaderObject( "Arabesque3/Assets/Shaders/Arabesque.vsh", GL_VERTEX_SHADER );
+    GLuint vertShaderObject = createShaderObject( "Arabesque/Assets/Shaders/Arabesque.vsh", GL_VERTEX_SHADER );
 	error();
-    GLuint fragShaderObject = createShaderObject( "Arabesque3/Assets/Shaders/Arabesque.fsh", GL_FRAGMENT_SHADER );
+    GLuint fragShaderObject = createShaderObject( "Arabesque/Assets/Shaders/Arabesque.fsh", GL_FRAGMENT_SHADER );
 	error();
 
     glReleaseShaderCompiler();
@@ -527,7 +527,7 @@ static void unloadShaders() {
 
 
 static void loadTextures() {
-	s_texture = createTextureObject( "Arabesque3/Assets/Textures/CircleMip.etc1", GL_ETC1_RGB8_OES );
+	s_texture = createTextureObject( "Arabesque/Assets/Textures/CircleMip.etc1", GL_ETC1_RGB8_OES );
 }
 
 
@@ -585,8 +585,8 @@ static void destroyFrameBufferObject( void ) {
 
 
 
-GLES2Playground_t e_playgroundArabesque3 = {
-    .name = "Arabesque3",
+GLES2Playground_t e_playgroundArabesque = {
+    .name = "Arabesque",
     .init = init,
     .deinit = deinit,
     .update = update,

@@ -13,9 +13,6 @@ SOURCES=main.c\
         glcore.c\
         OpenGLES2Core.c\
         Arabesque/Arabesque.c\
-        Arabesque1/Arabesque.c\
-        Arabesque2/Arabesque.c\
-        Arabesque3/Arabesque.c\
         FlyingCubes/FlyingCubes.c\
         noise.c\
         colorspace.c
