@@ -52,8 +52,9 @@ void terminated( const int in_SIG ) {
 void * glThread( void * argument ) {
 	uint32_t frameCounter = 0;
 
-	//initEGL( s_DISPLAY_NUMBER, s_screenWidth/2, 0, s_screenWidth/2, s_screenHeight/2 );
-	initEGL( s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight );
+	initEGL( s_DISPLAY_NUMBER, s_screenWidth - 400, 0, 256, 256 );
+	//initEGL( s_DISPLAY_NUMBER, s_screenWidth*3/4, 0, s_screenWidth/4, s_screenHeight/4 );
+	//initEGL( s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight );
 
 	while ( s_renderingThreadAlive ) {
 		drawEGL();

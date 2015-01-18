@@ -1,4 +1,5 @@
-CC=clang
+#CCC_CC=clang
+#CC=clang
 LIBS=
 CFLAGS=-g -std=gnu1x -Wall -pedantic -Wno-gnu -Wno-variadic-macros -O0
 #--analyze
@@ -14,6 +15,7 @@ SOURCES=main.c\
         OpenGLES2Core.c\
         Arabesque/Arabesque.c\
         FlyingCubes/FlyingCubes.c\
+        Font/Font.c\
         noise.c\
         colorspace.c
 OBJECTS=$(SOURCES:%.c=%.o)
@@ -34,13 +36,7 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
 
-#copy:
-#	echo "Copying from RPi"
-#	rsync -aLv pi@developi:/opt/vc ~/Developer/RPi/opt/
-#	rsync -aLv pi@developi:/usr/include ~/Developer/RPi/usr/
-#	rsync -aLv pi@developi:/usr/local/include ~/Developer/RPi/usr/local
-#	echo "Copying to RPi"
-#	echo ${SRCROOT}/${PROJECT_NAME}
-#	rsync -aLv -f"- .*" ${SRCROOT}/${PROJECT_NAME} pi@developi:~/Developer
-#	#ssh pi@developi "cd ~/Developer/${PROJECT_NAME};./configure;make"
-#	ssh pi@developi "cd ~/Developer/${PROJECT_NAME};make"
+analyse:
+	make clean
+	scan-build make
+	cppcheck --template="{file}:{line}: warning: {severity} ({id}): {message}" --enable=all --inconclusive --inconclusive .
