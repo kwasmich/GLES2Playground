@@ -216,7 +216,7 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
 
 
 
-static uint32_t s_time2 = 0;
+static uint32_t s_time = 0;
 static GLfloat s_randomWalk[3] = { 0, 0, 0 };
 static GLfloat s_randomWalkV[3] = { 0.0001, -0.0003, 0.0002 };
 static GLfloat s_randomWalkA[3] = {-0.0003,  0.0002, 0.0001 };
@@ -225,7 +225,7 @@ static GLfloat s_randomWalkA[3] = {-0.0003,  0.0002, 0.0001 };
 
 static void update() {
     int i, x, y, xy;
-    GLfloat time = s_time2 / 60.0f;
+    GLfloat time = s_time / 60.0f;
     GLfloat scaleXY = s_screenAspect * 2.0f / (GLfloat)( s_cols + 1 );
     GLfloat centerX = ( s_cols + 1 ) * scaleXY * 0.5f; //s_screenAspect;
     GLfloat centerY = ( s_rows + 1 ) * scaleXY * 0.5f; //1.0;
@@ -359,7 +359,7 @@ static void update() {
         s_quad2[i].a = blend * 255;
     }
     
-    s_time2++;
+    s_time++;
 }
 
 
