@@ -14,6 +14,9 @@
 #include <GLES2/gl2ext.h>
 
 
+#include <stdbool.h>
+
+
 typedef enum {
     UNIFORM_MODEL_MATRIX,
     UNIFORM_VIEW_MATRIX,
@@ -50,5 +53,8 @@ GLuint createTextureObject( const char* in_FILE_NAME, const GLenum in_INTERNAL_F
 
 char* createStringFromFileContents( const char* in_FILE_NAME );
 char* glEnumToCString( const GLenum in_ENUM );
+
+unsigned char* rawFromFileContents( const char* in_FILE_NAME, const bool in_ZERO_TERMINATE, int * out_fileSize );
+
 
 #endif

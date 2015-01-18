@@ -10,7 +10,6 @@
 #include "OpenGLES2Core.h"
 
 #include <assert.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,7 +19,6 @@
 
 static void detectRAWTextureSize( const int in_SIZE, GLsizei * out_dim, GLenum * out_format, GLint * out_mipMaps );
 static void detectETC1TextureSize( const int in_SIZE, GLsizei * out_dim, GLint * out_mipMaps );
-static unsigned char* rawFromFileContents( const char* in_FILE_NAME, const bool in_ZERO_TERMINATE, int * out_fileSize );
 
 
 #pragma mark - Shader
@@ -197,9 +195,22 @@ GLuint createTextureObject( const char* in_FILE_NAME, const GLenum in_INTERNAL_F
 			assert( false );
 		} else {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, dim, dim, 0, format, GL_UNSIGNED_BYTE, rawImageData );
+			glTexImage2D( GL_TEXTURE_2D, 0, format, dim, dim, 0, format, GL_UNSIGNED_BYTE, rawImageData );
 		}
-	}
+    } else if ( in_INTERNAL_FORMAT == GL_LUMINANCE ) {
+        detectRAWTextureSize( rawSize, &dim, &format, &mipMaps );
+        dim *= 2;
+        format = GL_LUMINANCE;
+        
+        if ( mipMaps ) {
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+            assert( false );
+        } else {
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+            glTexImage2D( GL_TEXTURE_2D, 0, format, dim, dim, 0, format, GL_UNSIGNED_BYTE, rawImageData );
+        }
+    }
 
     free_s( rawImageData );
 	return textureObject;
@@ -319,6 +330,13 @@ unsigned char* rawFromFileContents( const char* in_FILE_NAME, const bool in_ZERO
     if ( err != 0 ) {
         perror( in_FILE_NAME );
 		*out_fileSize = 0;
+        err = fclose( fileStream );
+        
+        if ( err != 0 ) {
+            perror( in_FILE_NAME );
+        }
+        
+        fileStream = NULL;
         return fileContents;
     }
 
@@ -327,6 +345,13 @@ unsigned char* rawFromFileContents( const char* in_FILE_NAME, const bool in_ZERO
     if ( length == -1 ) {
         perror( in_FILE_NAME );
 		*out_fileSize = 0;
+        err = fclose( fileStream );
+        
+        if ( err != 0 ) {
+            perror( in_FILE_NAME );
+        }
+        
+        fileStream = NULL;
         return fileContents;
     }
 
@@ -338,6 +363,13 @@ unsigned char* rawFromFileContents( const char* in_FILE_NAME, const bool in_ZERO
     if ( !fileContents ) {
         perror( in_FILE_NAME );
 		*out_fileSize = 0;
+        err = fclose( fileStream );
+        
+        if ( err != 0 ) {
+            perror( in_FILE_NAME );
+        }
+        
+        fileStream = NULL;
         return fileContents;
     }
 
