@@ -321,7 +321,7 @@ static inline float step( const float in_EDGE, const float in_X ) {
 }
 
 static inline float smoothstep( const float in_EDGE_0, const float in_EDGE_1, const float in_X ) {
-	float t = clamp( ( in_X - in_EDGE_0 ) / ( in_EDGE_1 - in_EDGE_1 ), 0, 1 );
+	float t = clamp( ( in_X - in_EDGE_0 ) / ( in_EDGE_1 - in_EDGE_0 ), 0, 1 );
 	return t * t * ( 3.0f - 2.0f * t );
 }
 
