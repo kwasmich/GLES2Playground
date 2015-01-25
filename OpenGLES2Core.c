@@ -107,7 +107,8 @@ Shader_t createProgramObject( const GLuint in_VERTEX_SHADER, const GLuint in_FRA
     shader.uniformLocations[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation( programObject, "u_normalMatrix" );
     shader.uniformLocations[UNIFORM_EC_LIGHT_POSITION] = glGetUniformLocation( programObject, "u_ecLightPos" );
     shader.uniformLocations[UNIFORM_COLOR] = glGetUniformLocation( programObject, "u_color" );
-	shader.uniformLocations[UNIFORM_TEXTURE] = glGetUniformLocation( programObject, "u_texture" );
+    shader.uniformLocations[UNIFORM_TEXTURE] = glGetUniformLocation( programObject, "u_texture" );
+    shader.uniformLocations[UNIFORM_TEXTURE_SIZE] = glGetUniformLocation( programObject, "u_textureSize" );
 
     // get attribute locations
     shader.attribLocations[ATTRIB_POSITION] = glGetAttribLocation( programObject, "a_position" );

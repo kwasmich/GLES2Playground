@@ -25,6 +25,7 @@ typedef enum {
     UNIFORM_EC_LIGHT_POSITION,
     UNIFORM_COLOR,
 	UNIFORM_TEXTURE,
+    UNIFORM_TEXTURE_SIZE,
     NUM_UNIFORMS
 } uniforms_t;
 
