@@ -12,10 +12,12 @@ LDLIBS+=`pkg-config --libs $(LIBS)`
 SOURCES=main.c\
         eglcore.c\
         glcore.c\
+        globaltime.c\
         OpenGLES2Core.c\
         Arabesque/Arabesque.c\
         FlyingCubes/FlyingCubes.c\
         Font/Font.c\
+        Font/FreeType3D.c\
         noise.c\
         colorspace.c
 OBJECTS=$(SOURCES:%.c=%.o)

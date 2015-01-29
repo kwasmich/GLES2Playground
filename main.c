@@ -14,6 +14,7 @@
 
 
 extern GLES2Playground_t e_playgroundArabesque;
+extern GLES2Playground_t e_playgroundFont;
 
 
 static const uint16_t s_DISPLAY_NUMBER = 0; // LCD = 0
@@ -53,8 +54,8 @@ void * glThread( void * argument ) {
 	uint32_t frameCounter = 0;
 
 	//initEGL( s_DISPLAY_NUMBER, s_screenWidth - 400, 0, 256, 256 );
-	//initEGL( s_DISPLAY_NUMBER, s_screenWidth / 2, 0, s_screenWidth / 2, s_screenHeight / 2 );
-	initEGL( s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight );
+	initEGL( s_DISPLAY_NUMBER, s_screenWidth / 2, 32, s_screenWidth / 2, s_screenHeight / 2 );
+	//initEGL( s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight );
 
 	while ( s_renderingThreadAlive ) {
 		drawEGL();
@@ -99,10 +100,12 @@ int main( int argc, char * argv[] ) {
     float blaub[135];
     //sleep( 5 );
     
+    int cnt = 0;
+    
 	while ( true ) {
 		//fputs( "o", stdout );
 		fflush( stdout );
-        usleep( 100 );
+        usleep( 1000 );
 		//sleep( 1 );
 
 		float * bla = e_playgroundArabesque.getDataPointer();
@@ -118,6 +121,34 @@ int main( int argc, char * argv[] ) {
             
             e_playgroundArabesque.commitData( blaub );
         }
+        
+        
+        switch ( cnt ) {
+            case 1000:
+                e_playgroundFont.setString( "Titel\nAlbum\nInterpret" );
+                break;
+                
+            case 11000:
+                e_playgroundFont.setString( "Affe\nTot\nSchade!" );
+                break;
+
+            case 21000:
+                e_playgroundFont.setString( "Lorem ipsum dolor sit amet, consectetur, adipisci velit.\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\nAt vero eos et accusam et justo duo dolores et ea rebum." );
+                break;
+
+            case 31000:
+                e_playgroundFont.setString( "" );
+                break;
+                
+            case 41000:
+                cnt = 0;
+                break;
+                
+            default:
+                break;
+        }
+        
+        cnt++;
 	}
 
 	exit( EXIT_SUCCESS );

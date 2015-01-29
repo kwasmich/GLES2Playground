@@ -225,7 +225,7 @@ void initEGL( const uint32_t in_DISPLAY_NUMBER, const uint32_t in_X, const uint3
 	eglCheckError();
 	assert( EGL_FALSE != result );
 
-	eglSwapInterval( s_display, 1 ); // only draw every n-th frame with n=1 : 50/60 FPS (depending on display) 0 = unsynchronized
+	eglSwapInterval( s_display, 4 ); // only draw every n-th frame with n=1 : 50/60 FPS (depending on display) 0 = unsynchronized
 	eglCheckError();
 
 	initGL( in_W, in_H );

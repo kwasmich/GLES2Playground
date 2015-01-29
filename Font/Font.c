@@ -6,12 +6,15 @@
 //
 //
 
+#include "FreeType3D.h"
+
 #include "../playground.h"
 
+#include "../colorspace.h"
+#include "../globaltime.h"
 #include "../Math3D.h"
 #include "../OpenGLES2Core.h"
 #include "../noise.h"
-#include "../colorspace.h"
 
 #include <assert.h>
 #include <iso646.h>
@@ -34,27 +37,12 @@
 
 static GLuint s_error;
 
-
-typedef struct {
-    GLfloat x, y;
-    GLubyte r, g, b, a;
-    GLushort s, t;
-} VertexData_t;
-
-
-typedef struct {
-    uint8_t charCode;
-    uint8_t bitMapWidth, bitMapHeight;
-    uint16_t posX, posY;
-    int8_t bitMapLeft, bitMapTop;
-    uint16_t advance;
-} FontMap_t;
-
-
-static VertexData_t * s_points = NULL;
-static FontMap_t * s_fontMap = NULL;
-static char s_string[] = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr";
-static uint8_t s_stringLength = 0;
+static uint16_t s_numPoints = 0;
+static ft3dVertices_t * s_points = NULL;
+static ft3dFontMap_t * s_fontMap = NULL;
+static char * s_string = NULL;
+static uint32_t s_lifeTime = 0;
+static const float LIFE_TIME = 5.0f;
 
 // OpenGL|ES state
 static Shader_t s_activeShader;
@@ -84,7 +72,7 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
     loadTextures();
     
     int rawSize = 0;
-    s_fontMap = (FontMap_t*)rawFromFileContents( "Font/Assets/Vera512.map", false, &rawSize );
+    s_fontMap = (ft3dFontMap_t*)rawFromFileContents( "Font/Assets/Vera512.map", false, &rawSize );
     
     glClearColor( 0.0f, 0.5f, 0.0f, 0.75f );
     glEnable( GL_BLEND );
@@ -104,75 +92,34 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
 
 
 
-static int s_cnt = 0;
-static uint32_t s_time = 0;
-
-
-
 static void update() {
-    //glClearColor( drand48(), drand48(), drand48(), 1 );
+    glClearColor( 0.5f + drand48() * 0.1f, 0.5f + drand48() * 0.1f, 0.5f + drand48() * 0.1f, 1 );
     
-    size_t numChars = strlen( s_string );
-    s_stringLength = numChars;
+    float time = timeGet();
     
-    if ( true || !s_points ) {
+    if ( s_numPoints and time > s_lifeTime ) {
         free_s( s_points );
-        s_points = malloc( numChars * 6 * sizeof( VertexData_t ) );
-        memset( s_points, 0xFF, numChars * 6 * sizeof( VertexData_t ) );
-        float penX = s_cnt;
-        float penY = 16;
-        
-        for ( size_t c = 0; c < numChars; c++ ) {
-            size_t idx = s_string[c];
-            FontMap_t f = s_fontMap[idx];
-            s_points[6 * c + 0].x = penX + f.bitMapLeft;
-            s_points[6 * c + 0].y = penY + f.bitMapTop;
-            s_points[6 * c + 1].x = penX + f.bitMapLeft;
-            s_points[6 * c + 1].y = penY + f.bitMapTop;
-            s_points[6 * c + 1].s = f.posX;
-            s_points[6 * c + 1].t = f.posY;
-            s_points[6 * c + 2].x = penX + f.bitMapLeft;
-            s_points[6 * c + 2].y = penY + f.bitMapTop - f.bitMapHeight;
-            s_points[6 * c + 2].s = f.posX;
-            s_points[6 * c + 2].t = f.posY + f.bitMapHeight;
-            s_points[6 * c + 3].x = penX + f.bitMapLeft + f.bitMapWidth;
-            s_points[6 * c + 3].y = penY + f.bitMapTop;
-            s_points[6 * c + 3].s = f.posX + f.bitMapWidth;
-            s_points[6 * c + 3].t = f.posY;
-            s_points[6 * c + 4].x = penX + f.bitMapLeft + f.bitMapWidth;
-            s_points[6 * c + 4].y = penY + f.bitMapTop - f.bitMapHeight;
-            s_points[6 * c + 4].s = f.posX + f.bitMapWidth;
-            s_points[6 * c + 4].t = f.posY + f.bitMapHeight;
-            s_points[6 * c + 5].x = penX + f.bitMapLeft + f.bitMapWidth;
-            s_points[6 * c + 5].y = penY + f.bitMapTop - f.bitMapHeight;
-            penX += f.advance;
-        }
+        s_numPoints = 0;
     }
-    
-    s_time++;
 }
 
 
 
 static void draw() {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glUseProgram( s_activeShader.programObject );
-    glEnableVertexAttribArray( s_activeShader.attribLocations[ATTRIB_POSITION] );
-    glEnableVertexAttribArray( s_activeShader.attribLocations[ATTRIB_COLOR] );
-    glEnableVertexAttribArray( s_activeShader.attribLocations[ATTRIB_TEX_COORD] );
-    error();
     
-    glBindTexture( GL_TEXTURE_2D, s_fontTexture );
-    glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_points, 0 ) );
-    glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2( s_points, 8 ) );
-    glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_points, 12 ) );
-    //glDrawArrays( GL_TRIANGLE_STRIP, s_cnt * 0, 4 );
-    glDrawArrays( GL_TRIANGLE_STRIP, 0, s_stringLength * 6 );
-    s_cnt--;
-    
-    if ( s_cnt == -500 ) s_cnt = 500;
-    
-    error();
+    if ( s_numPoints > 0 ) {
+        glUseProgram( s_activeShader.programObject );
+        glEnableVertexAttribArray( s_activeShader.attribLocations[ATTRIB_POSITION] );
+        glEnableVertexAttribArray( s_activeShader.attribLocations[ATTRIB_TEX_COORD] );
+        error();
+        
+        glBindTexture( GL_TEXTURE_2D, s_fontTexture );
+        glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(ft3dVertices_t), BUFFER_OFFSET2( s_points, 0 ) );
+        glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(ft3dVertices_t), BUFFER_OFFSET2( s_points, 8 ) );
+        glDrawArrays( GL_TRIANGLE_STRIP, 0, s_numPoints );
+        error();
+    }
 }
 
 
@@ -237,6 +184,25 @@ static void unloadTextures() {
 
 
 
+#pragma mark - public
+
+
+
+static void setString( const char * in_STRING ) {
+    if ( !s_fontMap ) return;
+    
+    free_s( s_string );
+    const size_t size = strlen( in_STRING ) + 1;
+    s_string = malloc( size * sizeof( char ) );
+    strncpy( s_string, in_STRING, size );
+    
+    free_s( s_points );
+    ft3dStringToVertexArray( &s_points, &s_numPoints, s_fontMap, s_string, 32, 128, 48 );
+    s_lifeTime = timeGet() + LIFE_TIME;
+}
+
+
+
 #pragma mark - exposed interface
 
 
@@ -246,5 +212,6 @@ GLES2Playground_t e_playgroundFont = {
     .init = init,
     .deinit = deinit,
     .update = update,
-    .draw = draw
+    .draw = draw,
+    .setString = setString
 };

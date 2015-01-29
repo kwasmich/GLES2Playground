@@ -8,6 +8,7 @@
 
 #include "glcore.h"
 
+#include "globaltime.h"
 #include "playground.h"
 
 #include <GLES2/gl2.h>
@@ -24,12 +25,14 @@ GLES2Playground_t play;
 void initGL( const int in_WIDTH, const int in_HEIGHT ) {
 	puts( (char*)glGetString( GL_EXTENSIONS ) );
     
+    timeReset();
     play = e_playgroundFont;
     play.init( in_WIDTH, in_HEIGHT );
 }
 
 
 void drawGL() {
+    timeTick();
 	play.update();
 	play.draw();
 }
