@@ -26,7 +26,7 @@ void initGL( const int in_WIDTH, const int in_HEIGHT ) {
 	puts( (char*)glGetString( GL_EXTENSIONS ) );
     
     timeReset();
-    play = e_playgroundFont;
+    play = e_playgroundArabesque;
     play.init( in_WIDTH, in_HEIGHT );
 }
 

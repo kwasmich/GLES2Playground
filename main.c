@@ -1,5 +1,5 @@
 #include "eglcore.h"
-
+#include "globaltime.h"
 #include "playground.h"
 
 #include <bcm_host.h>
@@ -49,23 +49,28 @@ void terminated( const int in_SIG ) {
 }
 
 
+static float s_timeStamp = 0;
+
 
 void * glThread( void * argument ) {
 	uint32_t frameCounter = 0;
 
-	//initEGL( s_DISPLAY_NUMBER, s_screenWidth - 400, 0, 256, 256 );
-	initEGL( s_DISPLAY_NUMBER, s_screenWidth / 2, 32, s_screenWidth / 2, s_screenHeight / 2 );
-	//initEGL( s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight );
+	//initEGL( s_DISPLAY_NUMBER, s_screenWidth / 2, 32, s_screenWidth / 2, s_screenHeight / 2 );
+	initEGL( s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight );
 
 	while ( s_renderingThreadAlive ) {
 		drawEGL();
 
 		frameCounter++;
 
-		if ( frameCounter == s_screenFrameRate ) {
-			fputs( ".", stdout );
+		if ( frameCounter == s_screenFrameRate * 2 ) {
+            float now = timeGet();
+            float deltaT = now - s_timeStamp;
+            printf( "%.1f FPS\n", ( s_screenFrameRate * 2.0f ) / deltaT );
+			//fputs( ".", stdout );
 			fflush( stdout );
 			frameCounter = 0;
+            s_timeStamp = now;
 		}
 	}
 

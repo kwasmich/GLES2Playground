@@ -41,6 +41,13 @@ typedef struct {
 	GLubyte s, t, u, v; // padding for 32bit alignment
 } VertexData_t;
 
+typedef struct {
+    GLuint frameBuffer;
+    GLuint colorTexture0;
+    GLsizei width;
+    GLsizei height;
+} FrameBufferObject_t;
+
 
 //static void error() {
 //    GLenum s_error = glGetError();
@@ -102,8 +109,10 @@ static VertexData_t s_quad2[4] = {
 // OpenGL|ES state
 static Shader_t s_activeShader;
 static GLuint s_texture;
-static GLuint s_framebuffer;
-static GLuint s_framebufferTexture;
+//static GLuint s_framebuffer;
+//static GLuint s_framebufferTexture;
+static FrameBufferObject_t s_fboFront;
+static FrameBufferObject_t s_fboBack;
 
 static GLuint s_screenWidth = 0;
 static GLuint s_screenHeight = 0;
@@ -114,25 +123,12 @@ static void loadShaders( void );
 static void unloadShaders( void );
 static void loadTextures( void );
 static void unloadTextures( void );
-static void createFrameBufferObject( void );
-static void destroyFrameBufferObject( void );
+static FrameBufferObject_t createFrameBufferObject( GLsizei const in_WIDTH, GLsizei const in_HEIGHT );
+static void destroyFrameBufferObject( FrameBufferObject_t * const in_out_fbo );
 
 
 static bool s_idle = true;
 static bool s_initialized = false;
-
-
-//inline static int min( const int in_X, const int in_Y ) {
-//	return ( in_X < in_Y ) ? in_X : in_Y;
-//}
-//
-//inline static int max( const int in_X, const int in_Y ) {
-//	return ( in_X > in_Y ) ? in_X : in_Y;
-//}
-//
-//inline static float clampi( const int in_X, const int in_MIN, const int in_MAX ) {
-//	return min( max( in_X, in_MIN ), in_MAX );
-//}
 
 
 
@@ -198,7 +194,8 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
     
     loadShaders();
     loadTextures();
-    createFrameBufferObject();
+    s_fboFront = createFrameBufferObject( in_WIDTH / 3, in_HEIGHT / 3 );
+    s_fboBack = createFrameBufferObject( in_WIDTH / 3, in_HEIGHT / 3 );
     
     glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
     glEnable( GL_BLEND );
@@ -370,11 +367,12 @@ static void draw() {
     error();
     
     if ( s_idle ) {
-        glBindFramebuffer( GL_FRAMEBUFFER, s_framebuffer );
+        glBindFramebuffer( GL_FRAMEBUFFER, s_fboBack.frameBuffer );
+        glViewport( 0, 0, s_fboBack.width, s_fboBack.height );
         glClear( GL_COLOR_BUFFER_BIT );
         
         {
-            glBindTexture( GL_TEXTURE_2D, s_framebufferTexture );
+            glBindTexture( GL_TEXTURE_2D, s_fboFront.colorTexture0 );
             glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad2, 0 ) );
             glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad2, 8 ) );
             glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad2, 12 ) );
@@ -389,11 +387,16 @@ static void draw() {
             glDrawArrays( GL_TRIANGLE_STRIP, 0, s_numPoints * 6 );
         }
         
+        FrameBufferObject_t tmpFBO = s_fboFront;
+        s_fboFront = s_fboBack;
+        s_fboBack = tmpFBO;
+        
         glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+        glViewport( 0, 0, s_screenWidth, s_screenHeight );
         glClear( GL_COLOR_BUFFER_BIT );
         
         {
-            glBindTexture( GL_TEXTURE_2D, s_framebufferTexture );
+            glBindTexture( GL_TEXTURE_2D, s_fboFront.colorTexture0 );
             glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 0 ) );
             glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 8 ) );
             glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 12 ) );
@@ -406,6 +409,7 @@ static void draw() {
         glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_points, 12 ) );
         glDrawArrays( GL_TRIANGLE_STRIP, 0, s_numPoints * 6 );
     }
+    //glBlitFramebufferANGLE(<#GLint srcX0#>, <#GLint srcY0#>, <#GLint srcX1#>, <#GLint srcY1#>, <#GLint dstX0#>, <#GLint dstY0#>, <#GLint dstX1#>, <#GLint dstY1#>, <#GLbitfield mask#>, <#GLenum filter#>)
     
     error();
 }
@@ -415,7 +419,8 @@ static void draw() {
 static void deinit() {
     s_initialized = false;
     
-	destroyFrameBufferObject();
+	destroyFrameBufferObject( &s_fboFront );
+    destroyFrameBufferObject( &s_fboBack );
 	unloadTextures();
     unloadShaders();
 	free_s( s_data );
@@ -543,9 +548,13 @@ static void unloadTextures() {
 
 
 
-static void createFrameBufferObject( void ) {
-	glGenFramebuffers( 1, &s_framebuffer );
-	glBindFramebuffer( GL_FRAMEBUFFER, s_framebuffer );
+static FrameBufferObject_t createFrameBufferObject( GLsizei const in_WIDTH, GLsizei const in_HEIGHT ) {
+    FrameBufferObject_t fbo;
+    fbo.width = in_WIDTH;
+    fbo.height = in_HEIGHT;
+    
+	glGenFramebuffers( 1, &(fbo.frameBuffer) );
+	glBindFramebuffer( GL_FRAMEBUFFER, fbo.frameBuffer );
 
 	//	GLuint colorRenderBuffer;
 	//	glGenRenderbuffers( 1, &colorRenderBuffer );
@@ -553,27 +562,32 @@ static void createFrameBufferObject( void ) {
 	//	glRenderbufferStorage( GL_RENDERBUFFER, GL_RGBA8_OES, s_screenWidth, s_screenHeight );
 	//	glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderBuffer );
 
-	glGenTextures( 1, &s_framebufferTexture );
-	glBindTexture( GL_TEXTURE_2D, s_framebufferTexture );
+	glGenTextures( 1, &(fbo.colorTexture0) );
+	glBindTexture( GL_TEXTURE_2D, fbo.colorTexture0 );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, s_screenWidth, s_screenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL );
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, s_framebufferTexture, 0 );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, fbo.width, fbo.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL );
+	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo.colorTexture0, 0 );
 
 	GLenum status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
 	assert( status == GL_FRAMEBUFFER_COMPLETE );
 
 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	error();
+    
+    return fbo;
 }
 
 
 
-static void destroyFrameBufferObject( void ) {
+static void destroyFrameBufferObject( FrameBufferObject_t * const in_out_fbo ) {
 	fputs( "destroyFrameBufferObject\n", stderr );
-	glDeleteTextures( 1, &s_framebufferTexture );
-	s_framebufferTexture = 0;
-	glDeleteFramebuffers( 1, &s_framebuffer );
-	s_framebuffer = 0;
+	glDeleteTextures( 1, &(in_out_fbo->colorTexture0) );
+	in_out_fbo->colorTexture0 = 0;
+	glDeleteFramebuffers( 1, &(in_out_fbo->frameBuffer) );
+	in_out_fbo->frameBuffer = 0;
+    in_out_fbo->width = 0;
+    in_out_fbo->height = 0;
 	error();
 }
 
