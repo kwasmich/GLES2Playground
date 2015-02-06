@@ -20,47 +20,36 @@ extern GLES2Playground_t e_playgroundFont;
 static const uint16_t s_DISPLAY_NUMBER = 0; // LCD = 0
 
 static pthread_t s_renderingThread;
-static bool s_renderingThreadAlive = true;
+volatile static sig_atomic_t s_renderingThreadAlive = 1;
 static uint32_t s_screenWidth = 0;
 static uint32_t s_screenHeight = 0;
 static uint32_t s_screenFrameRate = 1;
 
-void destroy( void );
-void terminated( const int in_SIG );
-void glThreadDestroy( void * arg );
-void * glThread( void * argument );
 
-
-
-void destroy() {
+static void destroy() {
 	fputs( "destroy\n", stderr );
-
-	s_renderingThreadAlive = false;
-	pthread_join( s_renderingThread, NULL );
-
 	bcm_host_deinit();
 }
 
 
 
-void terminated( const int in_SIG ) {
+static void terminated( const int in_SIG ) {
 	fprintf( stderr, "\nTERMINATING due to signal %i\n", in_SIG );
-	exit( -1 );
+    s_renderingThreadAlive = 0;
 }
 
 
 static float s_timeStamp = 0;
 
 
-void * glThread( void * argument ) {
+static void * glThread( void * argument ) {
 	uint32_t frameCounter = 0;
-
-	//initEGL( s_DISPLAY_NUMBER, s_screenWidth / 2, 32, s_screenWidth / 2, s_screenHeight / 2 );
-	initEGL( s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight );
+    
+	initEGL( s_DISPLAY_NUMBER, s_screenWidth / 4, 32, s_screenWidth * 3 / 4, s_screenHeight * 3 / 4 );
+	//initEGL( s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight );
 
 	while ( s_renderingThreadAlive ) {
 		drawEGL();
-
 		frameCounter++;
 
 		if ( frameCounter == s_screenFrameRate * 2 ) {
@@ -75,7 +64,7 @@ void * glThread( void * argument ) {
 	}
 
 	destroyEGL();
-	return NULL;
+	pthread_exit( NULL );
 }
 
 
@@ -107,7 +96,7 @@ int main( int argc, char * argv[] ) {
     
     int cnt = 0;
     
-	while ( true ) {
+	while ( s_renderingThreadAlive ) {
 		//fputs( "o", stdout );
 		fflush( stdout );
         usleep( 1000 );
@@ -126,7 +115,6 @@ int main( int argc, char * argv[] ) {
             
             e_playgroundArabesque.commitData( blaub );
         }
-        
         
         switch ( cnt ) {
             case 1000:
@@ -155,6 +143,8 @@ int main( int argc, char * argv[] ) {
         
         cnt++;
 	}
+    
+    pthread_join( s_renderingThread, NULL );
 
 	exit( EXIT_SUCCESS );
 }

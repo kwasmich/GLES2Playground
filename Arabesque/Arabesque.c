@@ -367,6 +367,27 @@ static void draw() {
     error();
     
     if ( s_idle ) {
+        
+        glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+        glViewport( 0, 0, s_screenWidth, s_screenHeight );
+        glClear( GL_COLOR_BUFFER_BIT );
+        
+        {
+            glBindTexture( GL_TEXTURE_2D, s_fboFront.colorTexture0 );
+            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 0 ) );
+            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 8 ) );
+            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 12 ) );
+            glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+        }
+        
+        {
+            glBindTexture( GL_TEXTURE_2D, s_texture );
+            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_points, 0 ) );
+            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2( s_points, 8 ) );
+            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_points, 12 ) );
+            glDrawArrays( GL_TRIANGLE_STRIP, 0, s_numPoints * 6 );
+        }
+        
         glBindFramebuffer( GL_FRAMEBUFFER, s_fboBack.frameBuffer );
         glViewport( 0, 0, s_fboBack.width, s_fboBack.height );
         glClear( GL_COLOR_BUFFER_BIT );
@@ -390,18 +411,6 @@ static void draw() {
         FrameBufferObject_t tmpFBO = s_fboFront;
         s_fboFront = s_fboBack;
         s_fboBack = tmpFBO;
-        
-        glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-        glViewport( 0, 0, s_screenWidth, s_screenHeight );
-        glClear( GL_COLOR_BUFFER_BIT );
-        
-        {
-            glBindTexture( GL_TEXTURE_2D, s_fboFront.colorTexture0 );
-            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 0 ) );
-            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 8 ) );
-            glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_quad, 12 ) );
-            glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-        }
     } else {
         glBindTexture( GL_TEXTURE_2D, s_texture );
         glVertexAttribPointer( s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2( s_points, 0 ) );
@@ -565,7 +574,7 @@ static FrameBufferObject_t createFrameBufferObject( GLsizei const in_WIDTH, GLsi
 	glGenTextures( 1, &(fbo.colorTexture0) );
 	glBindTexture( GL_TEXTURE_2D, fbo.colorTexture0 );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, fbo.width, fbo.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL );
 	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo.colorTexture0, 0 );
 
