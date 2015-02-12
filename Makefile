@@ -15,6 +15,7 @@ SOURCES=main.c\
         globaltime.c\
         OpenGLES2Core.c\
         Arabesque/Arabesque.c\
+        AudioVisualizer/AudioVisualizer.c\
         FlyingCubes/FlyingCubes.c\
         Font/Font.c\
         Font/FreeType3D.c\

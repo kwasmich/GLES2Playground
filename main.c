@@ -13,9 +13,9 @@
 #include <stdio.h>
 
 
-extern GLES2Playground_t e_playgroundArabesque;
+//extern GLES2Playground_t e_playgroundArabesque;
 extern GLES2Playground_t e_playgroundFont;
-
+extern GLES2Playground_t e_playgroundAudioVisualizer;
 
 static const uint16_t s_DISPLAY_NUMBER = 0; // LCD = 0
 
@@ -39,10 +39,9 @@ static void terminated( const int in_SIG ) {
 }
 
 
-static float s_timeStamp = 0;
-
 
 static void * glThread( void * argument ) {
+    float s_timeStamp = 0;
 	uint32_t frameCounter = 0;
     
 	initEGL( s_DISPLAY_NUMBER, s_screenWidth / 4, 32, s_screenWidth * 3 / 4, s_screenHeight * 3 / 4 );
@@ -98,42 +97,39 @@ int main( int argc, char * argv[] ) {
     
 	while ( s_renderingThreadAlive ) {
 		//fputs( "o", stdout );
-		fflush( stdout );
-        usleep( 1000 );
+		//fflush( stdout );
+        usleep( 500000 );
 		//sleep( 1 );
-
-		float * bla = e_playgroundArabesque.getDataPointer();
         
-        if ( false and bla ) {
-            for ( int i = 0; i < 135; i++ ) {
-                bla[i] = drand48();
-            }
-        } else {
-            for ( int i = 0; i < 135; i++ ) {
-                blaub[i] = drand48();
-            }
-            
-            e_playgroundArabesque.commitData( blaub );
+        
+        for ( int i = 0; i < 135; i++ ) {
+            blaub[i] = drand48();
         }
         
+        e_playgroundAudioVisualizer.commitData( blaub );
+        
         switch ( cnt ) {
-            case 1000:
+            case 1:
                 e_playgroundFont.setString( "Titel\nAlbum\nInterpret" );
+                e_playgroundAudioVisualizer.setString( "Titel\nAlbum\nInterpret" );
                 break;
                 
-            case 11000:
+            case 11:
                 e_playgroundFont.setString( "Affe\nTot\nSchade!" );
+                e_playgroundAudioVisualizer.setString( "Affe\nTot\nSchade!" );
                 break;
 
-            case 21000:
+            case 21:
                 e_playgroundFont.setString( "Lorem ipsum dolor sit amet, consectetur, adipisci velit.\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\nAt vero eos et accusam et justo duo dolores et ea rebum." );
+                e_playgroundAudioVisualizer.setString( "Lorem ipsum dolor sit amet, consectetur, adipisci velit.\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\nAt vero eos et accusam et justo duo dolores et ea rebum." );
                 break;
 
-            case 31000:
+            case 31:
                 e_playgroundFont.setString( "" );
+                e_playgroundAudioVisualizer.setString( "" );
                 break;
                 
-            case 41000:
+            case 41:
                 cnt = 0;
                 break;
                 

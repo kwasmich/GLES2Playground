@@ -16,7 +16,6 @@ typedef struct {
     void (*deinit)( void );
     void (*update)( void );
     void (*draw)( void );
-    float * (*getDataPointer)( void );
     void (*commitData)( const float in_DATA[] );
     void (*setString)( const char * in_STRING );
 } GLES2Playground_t;

@@ -16,6 +16,7 @@
 
 
 extern GLES2Playground_t e_playgroundArabesque;
+extern GLES2Playground_t e_playgroundAudioVisualizer;
 extern GLES2Playground_t e_playgroundFlyingCubes;
 extern GLES2Playground_t e_playgroundFont;
 
@@ -26,7 +27,7 @@ void initGL( const int in_WIDTH, const int in_HEIGHT ) {
 	puts( (char*)glGetString( GL_EXTENSIONS ) );
     
     timeReset();
-    play = e_playgroundArabesque;
+    play = e_playgroundAudioVisualizer;
     play.init( in_WIDTH, in_HEIGHT );
 }
 
