@@ -22,6 +22,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <execinfo.h>
 
@@ -218,7 +219,7 @@ static void update() {
     GLfloat scaleXY = s_screenAspect * 2.0f / (GLfloat)( s_cols + 1 );
     GLfloat centerX = ( s_cols + 1 ) * scaleXY * 0.5f; //s_screenAspect;
     GLfloat centerY = ( s_rows + 1 ) * scaleXY * 0.5f; //1.0;
-    GLfloat blend = clamp( 0.95f + noise( time * 0.01f, time * 0.02f, time * 0.04f ), 0, 0.95f );
+    GLfloat blend = glmClamp( 0.95f + noise( time * 0.01f, time * 0.02f, time * 0.04f ), 0, 0.95f );
     //blend = 0;
     
     if ( s_idle ) {
@@ -231,7 +232,7 @@ static void update() {
                 GLfloat cX = ( x + 1 ) * scaleXY - centerX;
                 s_data[xy] = 0.5f + cos( cX + time ) * sin( cY * ( cX + time ) ) * 0.5f;
                 s_data[xy] = 0.5f;
-                s_data[xy] = clamp( noise( x * 0.2f + s_randomWalk[0], y * 0.2f + s_randomWalk[1], s_randomWalk[2] ) * 1.5f, 0, 1 );
+                s_data[xy] = glmClamp( noise( x * 0.2f + s_randomWalk[0], y * 0.2f + s_randomWalk[1], s_randomWalk[2] ) * 1.5f, 0, 1 );
                 xy++;
             }
         }
@@ -270,7 +271,7 @@ static void update() {
             s_points[xy * 6 + 5].x = cX + halfWidth;	// degenerate triangle
             s_points[xy * 6 + 5].y = cY + halfWidth;	// degenerate triangle
             
-            float rnd = clamp( 0.5f + noise( x * 0.1f, y * 0.1f + time * 0.25, 0.0f ) * 0.75f, 0, 1 );
+            float rnd = glmClamp( 0.5f + noise( x * 0.1f, y * 0.1f + time * 0.25, 0.0f ) * 0.75f, 0, 1 );
             GLfloat alpha = ( 1.0f - fabsf( s_data[xy] - 0.667f ) * 1.5f );
             hsl_t hsl = { fmodf( rnd * 360.0f, 360.0f ), 0.7f, 0.5f };
             rgb8_t color = colorspaceConvertHSL2RGB( hsl );
@@ -300,9 +301,9 @@ static void update() {
     s_randomWalkV[0] += s_randomWalkA[0];
     s_randomWalkV[1] += s_randomWalkA[1];
     s_randomWalkV[2] += s_randomWalkA[2];
-    s_randomWalkV[0] = clamp( s_randomWalkV[0], -0.001, 0.001 );
-    s_randomWalkV[1] = clamp( s_randomWalkV[1], -0.001, 0.001 );
-    s_randomWalkV[2] = clamp( s_randomWalkV[2], -0.001, 0.001 );
+    s_randomWalkV[0] = glmClamp( s_randomWalkV[0], -0.001, 0.001 );
+    s_randomWalkV[1] = glmClamp( s_randomWalkV[1], -0.001, 0.001 );
+    s_randomWalkV[2] = glmClamp( s_randomWalkV[2], -0.001, 0.001 );
     s_randomWalk[0] += s_randomWalkV[0];
     s_randomWalk[1] += s_randomWalkV[1];
     s_randomWalk[2] += s_randomWalkV[2];
@@ -331,8 +332,8 @@ static void update() {
     for ( i = 0; i < 4; i++ ) {
         vec.x = s_quad2[i].x;
         vec.y = s_quad2[i].y;
-        vec = mul( rot, vec );	// rotate
-        vec = add( vec, shift );	// shift
+        vec = glmMul( rot, vec );	// rotate
+        vec = glmAdd( vec, shift );	// shift
         s_quad2[i].x = vec.x;
         s_quad2[i].y = vec.y;
         
@@ -654,6 +655,7 @@ GLES2Playground_t e_playgroundAudioVisualizer = {
     .deinit = deinit,
     .update = update,
     .draw = draw,
+    .setIdle = setIdle,
     .commitData = commitData,
     .setString = setString
 };

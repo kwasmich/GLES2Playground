@@ -22,6 +22,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <execinfo.h>
 
@@ -38,7 +39,7 @@
 static GLuint s_error;
 
 static uint16_t s_numFontPoints = 0;
-static ft3dVertices_t * s_fontPoints = NULL;
+static ft3dVertex_t * s_fontPoints = NULL;
 static ft3dFontMap_t * s_fontMap = NULL;
 static char * s_string = NULL;
 static uint32_t s_lifeTime = 0;
@@ -64,8 +65,6 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
     s_screenHeight = in_HEIGHT;
     s_screenAspect = in_WIDTH / (float)in_HEIGHT;
     
-    printf( "%d x %d\n", in_WIDTH, in_HEIGHT );
-    
     mat4 projectionMatrix = mat4MakeOrtho( 0, in_WIDTH, 0, in_HEIGHT, 0, 1 );
     
     loadShaders();
@@ -76,7 +75,7 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
     
     glClearColor( 0.0f, 0.5f, 0.0f, 0.75f );
     glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_2D, s_textureFont );
     
@@ -90,7 +89,7 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
 
 
 static void update() {
-    glClearColor( 0.5f + drand48() * 0.1f, 0.5f + drand48() * 0.1f, 0.5f + drand48() * 0.1f, 1 );
+    glClearColor( 0.005f + drand48() * 0.01f, 0.005f + drand48() * 0.01f, 0.005f + drand48() * 0.01f, 1 );
     
     float time = timeGet();
     
@@ -112,8 +111,9 @@ static void draw() {
         error();
         
         glBindTexture( GL_TEXTURE_2D, s_textureFont );
-        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(ft3dVertices_t), BUFFER_OFFSET2( s_fontPoints, 0 ) );
-        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(ft3dVertices_t), BUFFER_OFFSET2( s_fontPoints, 8 ) );
+        glVertexAttrib4f( s_shaderFont.attribLocations[ATTRIB_COLOR], 1, 1, 1, 1 );
+        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2( s_fontPoints, 0 ) );
+        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2( s_fontPoints, 8 ) );
         glDrawArrays( GL_TRIANGLE_STRIP, 0, s_numFontPoints );
         error();
     }
@@ -194,7 +194,8 @@ static void setString( const char * in_STRING ) {
     strncpy( s_string, in_STRING, size );
     
     free_s( s_fontPoints );
-    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, s_fontMap, s_string, 32, 128, 48 );
+    float width = 0;
+    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_string, 32, 128, 48, 1.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
     s_lifeTime = timeGet() + LIFE_TIME;
 }
 

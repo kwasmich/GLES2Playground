@@ -107,18 +107,18 @@ static void update() {
     float aspect = fabsf( 1920.f / 1200.f );
 	mat4 projectionMatrix = mat4MakePerspective( 65.0f * M_PI / 180.f, aspect, 0.1f, 100.0f );
 
-    mat4 baseModelViewMatrix = mat4MakeTranslate( (vec3){{ 0.0f, 0.0f, -4.0f }} );
+    mat4 baseModelViewMatrix = mat4MakeTranslate( VEC3( 0.0f, 0.0f, -4.0f ) );
 	mat4 rotationMatrix = mat4MakeRotateY( _rotation );
-    baseModelViewMatrix = mat4Mul( baseModelViewMatrix, rotationMatrix );
+    baseModelViewMatrix = glmMul( baseModelViewMatrix, rotationMatrix );
 
     // Compute the model view matrix for the object rendered with ES2
-	mat4 modelViewMatrix = mat4MakeTranslate( (vec3){{ 0.0f, 0.0f, 1.5f }} );
-	rotationMatrix = mat4MakeRotate( _rotation, (vec3){{ 1.0f, 1.0f, 1.0f }} );
-	modelViewMatrix = mat4Mul( modelViewMatrix, rotationMatrix );
-    modelViewMatrix = mat4Mul( baseModelViewMatrix, modelViewMatrix );
+	mat4 modelViewMatrix = mat4MakeTranslate( VEC3( 0.0f, 0.0f, 1.5f ) );
+	rotationMatrix = mat4MakeRotate( _rotation, VEC3( 1.0f, 1.0f, 1.0f ) );
+	modelViewMatrix = glmMul( modelViewMatrix, rotationMatrix );
+    modelViewMatrix = glmMul( baseModelViewMatrix, modelViewMatrix );
 
     _normalMatrix = mat3InverseTranspose( mat3FromMat4( modelViewMatrix ) );
-    _modelViewProjectionMatrix = mat4Mul( projectionMatrix, modelViewMatrix );
+    _modelViewProjectionMatrix = glmMul( projectionMatrix, modelViewMatrix );
     _rotation += 0.01f;
 }
 

@@ -10,12 +10,16 @@
 #define GLES2Playground_playground_h
 
 
+#include <stdbool.h>
+
+
 typedef struct {
     char *name;
     void (*init)( const int in_WIDTH, const int in_HEIGHT );
     void (*deinit)( void );
     void (*update)( void );
     void (*draw)( void );
+    void (*setIdle)( const bool in_IDLE );
     void (*commitData)( const float in_DATA[] );
     void (*setString)( const char * in_STRING );
 } GLES2Playground_t;

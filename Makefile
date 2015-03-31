@@ -16,9 +16,11 @@ SOURCES=main.c\
         OpenGLES2Core.c\
         Arabesque/Arabesque.c\
         AudioVisualizer/AudioVisualizer.c\
+        Clock/Clock.c\
         FlyingCubes/FlyingCubes.c\
         Font/Font.c\
         Font/FreeType3D.c\
+        Font/encoding.c\
         noise.c\
         colorspace.c
 OBJECTS=$(SOURCES:%.c=%.o)

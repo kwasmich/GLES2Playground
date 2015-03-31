@@ -11,6 +11,7 @@
 
 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 
@@ -24,15 +25,23 @@ typedef struct {
 } ft3dFontMap_t;
 
 
+typedef struct RGBA_s {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+} RGBA_t;
+
 
 typedef struct {
     float x, y;
     uint16_t s, t;
-} ft3dVertices_t;
+    RGBA_t color;
+} ft3dVertex_t;
 
 
 
-void ft3dStringToVertexArray( ft3dVertices_t ** out_vertices, uint16_t * out_numVertex, const ft3dFontMap_t * in_FONT_MAP, const char * in_STRING, const float in_X, const float in_Y, const float in_LINE_SPACING );
+void ft3dStringToVertexArray( ft3dVertex_t ** out_vertices, uint16_t * out_numVertex, float * out_width, const ft3dFontMap_t * in_FONT_MAP, const char * in_STRING, const float in_X, const float in_Y, const float in_LINE_SPACING, const float in_SCALE, const RGBA_t in_COLOR, const bool in_TOP_DOWN );
 
 
 

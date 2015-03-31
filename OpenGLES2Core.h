@@ -26,6 +26,7 @@ typedef enum {
     UNIFORM_COLOR,
 	UNIFORM_TEXTURE,
     UNIFORM_TEXTURE_SIZE,
+    UNIFORM_VEC4,
     NUM_UNIFORMS
 } uniforms_t;
 
@@ -57,5 +58,9 @@ char* glEnumToCString( const GLenum in_ENUM );
 
 unsigned char* rawFromFileContents( const char* in_FILE_NAME, const bool in_ZERO_TERMINATE, int * out_fileSize );
 
+
+#define glxPrintInteger(X) GLint x_##X; glGetIntegerv( X, &x_##X ); printf( "%-40s: %i\n", #X, x_##X );
+#define glxPrintInteger2(X) GLint x_##X[2]; glGetIntegerv( X, x_##X ); printf( "%-40s: %i, %i\n", #X, x_##X[0], x_##X[1] );
+#define glxPrintString(X) printf( "%-40s: %s\n", #X, (char*)glGetString( X ) );
 
 #endif

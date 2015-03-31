@@ -109,6 +109,7 @@ Shader_t createProgramObject( const GLuint in_VERTEX_SHADER, const GLuint in_FRA
     shader.uniformLocations[UNIFORM_COLOR] = glGetUniformLocation( programObject, "u_color" );
     shader.uniformLocations[UNIFORM_TEXTURE] = glGetUniformLocation( programObject, "u_texture" );
     shader.uniformLocations[UNIFORM_TEXTURE_SIZE] = glGetUniformLocation( programObject, "u_textureSize" );
+    shader.uniformLocations[UNIFORM_VEC4] = glGetUniformLocation( programObject, "u_vec4" );
 
     // get attribute locations
     shader.attribLocations[ATTRIB_POSITION] = glGetAttribLocation( programObject, "a_position" );
