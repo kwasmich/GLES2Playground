@@ -109,16 +109,16 @@ static void update() {
 
     mat4 baseModelViewMatrix = mat4MakeTranslate( VEC3( 0.0f, 0.0f, -4.0f ) );
 	mat4 rotationMatrix = mat4MakeRotateY( _rotation );
-    baseModelViewMatrix = glmMul( baseModelViewMatrix, rotationMatrix );
+    baseModelViewMatrix = mulm4m4( baseModelViewMatrix, rotationMatrix );
 
     // Compute the model view matrix for the object rendered with ES2
 	mat4 modelViewMatrix = mat4MakeTranslate( VEC3( 0.0f, 0.0f, 1.5f ) );
 	rotationMatrix = mat4MakeRotate( _rotation, VEC3( 1.0f, 1.0f, 1.0f ) );
-	modelViewMatrix = glmMul( modelViewMatrix, rotationMatrix );
-    modelViewMatrix = glmMul( baseModelViewMatrix, modelViewMatrix );
+	modelViewMatrix = mulm4m4( modelViewMatrix, rotationMatrix );
+    modelViewMatrix = mulm4m4( baseModelViewMatrix, modelViewMatrix );
 
     _normalMatrix = mat3InverseTranspose( mat3FromMat4( modelViewMatrix ) );
-    _modelViewProjectionMatrix = glmMul( projectionMatrix, modelViewMatrix );
+    _modelViewProjectionMatrix = mulm4m4( projectionMatrix, modelViewMatrix );
     _rotation += 0.01f;
 }
 

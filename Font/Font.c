@@ -41,6 +41,7 @@ static GLuint s_error;
 static uint16_t s_numFontPoints = 0;
 static ft3dVertex_t * s_fontPoints = NULL;
 static ft3dFontMap_t * s_fontMap = NULL;
+static int s_fontMapSize = 0;
 static char * s_string = NULL;
 static uint32_t s_lifeTime = 0;
 static const float LIFE_TIME = 5.0f;
@@ -72,6 +73,7 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
     
     int rawSize = 0;
     s_fontMap = (ft3dFontMap_t*)rawFromFileContents( "Font/Assets/Vera512.map", false, &rawSize );
+    s_fontMapSize = rawSize / sizeof( ft3dFontMap_t );
     
     glClearColor( 0.0f, 0.5f, 0.0f, 0.75f );
     glEnable( GL_BLEND );
@@ -195,7 +197,7 @@ static void setString( const char * in_STRING ) {
     
     free_s( s_fontPoints );
     float width = 0;
-    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_string, 32, 128, 48, 1.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
+    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 128, 48, 1.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
     s_lifeTime = timeGet() + LIFE_TIME;
 }
 

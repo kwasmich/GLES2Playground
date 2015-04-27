@@ -17,11 +17,11 @@
 
 
 typedef struct {
-    uint8_t charCode;
-    uint8_t bitMapWidth, bitMapHeight;
-    uint16_t posX, posY;
+    uint16_t charCode;                  // only the first 65536 unicode glyphs
+    uint16_t posX, posY;                // assuming a font map does not exceed 65536 x 65536 px
     int8_t bitMapLeft, bitMapTop;
-    uint16_t advance;
+    uint8_t bitMapWidth, bitMapHeight;  // assuming a single glyph does not exceed 256 x 256 px
+    uint8_t advance;
 } ft3dFontMap_t;
 
 
@@ -41,7 +41,7 @@ typedef struct {
 
 
 
-void ft3dStringToVertexArray( ft3dVertex_t ** out_vertices, uint16_t * out_numVertex, float * out_width, const ft3dFontMap_t * in_FONT_MAP, const char * in_STRING, const float in_X, const float in_Y, const float in_LINE_SPACING, const float in_SCALE, const RGBA_t in_COLOR, const bool in_TOP_DOWN );
+void ft3dStringToVertexArray( ft3dVertex_t ** out_vertices, uint16_t * out_numVertex, float * out_width, const ft3dFontMap_t * in_FONT_MAP, const int in_FONT_MAP_SIZE, const char * in_STRING, const float in_X, const float in_Y, const float in_LINE_SPACING, const float in_SCALE, const RGBA_t in_COLOR, const bool in_TOP_DOWN );
 
 
 
