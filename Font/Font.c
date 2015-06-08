@@ -6,15 +6,14 @@
 //
 //
 
-#include "FreeType3D.h"
-
 #include "../playground.h"
 
 #include "../colorspace.h"
+#include "../FreeType3D.h"
 #include "../globaltime.h"
 #include "../Math3D.h"
-#include "../OpenGLES2Core.h"
 #include "../noise.h"
+#include "../OpenGLES2Core.h"
 
 #include <assert.h>
 #include <iso646.h>
@@ -91,8 +90,6 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
 
 
 static void update() {
-    glClearColor( 0.005f + drand48() * 0.01f, 0.005f + drand48() * 0.01f, 0.005f + drand48() * 0.01f, 1 );
-    
     float time = timeGet();
     
     if ( s_numFontPoints and time > s_lifeTime ) {
@@ -197,7 +194,7 @@ static void setString( const char * in_STRING ) {
     
     free_s( s_fontPoints );
     float width = 0;
-    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 128, 48, 1.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
+    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 528, 148, 4.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
     s_lifeTime = timeGet() + LIFE_TIME;
 }
 

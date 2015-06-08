@@ -6,15 +6,15 @@
 //
 //
 
-#include "FreeType3D.h"
 
 #include "../playground.h"
 
 #include "../colorspace.h"
+#include "../FreeType3D.h"
 #include "../globaltime.h"
 #include "../Math3D.h"
-#include "../OpenGLES2Core.h"
 #include "../noise.h"
+#include "../OpenGLES2Core.h"
 
 #include <assert.h>
 #include <iso646.h>
@@ -78,8 +78,9 @@ static VertexData_t s_quad2[4] = {
 
 
 static uint16_t s_numFontPoints = 0;
-static ft3dVertices_t * s_fontPoints = NULL;
+static ft3dVertex_t * s_fontPoints = NULL;
 static ft3dFontMap_t * s_fontMap = NULL;
+static int s_fontMapSize = 0;
 static char * s_string = NULL;
 static uint32_t s_lifeTime = 0;
 static const float LIFE_TIME = 15.0f;
@@ -180,7 +181,7 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
     s_fboBack = createFrameBufferObject( in_WIDTH / 3, in_HEIGHT / 3 );
     int rawSize = 0;
     s_fontMap = (ft3dFontMap_t*)rawFromFileContents( "AudioVisualizer/Assets/Vera512.map", false, &rawSize );
-    
+    s_fontMapSize = rawSize / sizeof( ft3dFontMap_t );
     
     glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
     glEnable( GL_BLEND );
@@ -316,7 +317,7 @@ static void update() {
     float w = s_screenAspect * ( 1.0f + scale );
     float h = 1.0f + scale;
     
-    vec2 shift = { { shiftX, shiftY } };
+    vec2 shift = { shiftX, shiftY };
     mat2 rot = mat2MakeRotateZ( rotateZ );
     vec2 vec;
     
@@ -425,8 +426,9 @@ static void draw() {
         error();
         
         glBindTexture( GL_TEXTURE_2D, s_textureFont );
-        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(ft3dVertices_t), BUFFER_OFFSET2( s_fontPoints, 0 ) );
-        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(ft3dVertices_t), BUFFER_OFFSET2( s_fontPoints, 8 ) );
+        glVertexAttrib4f( s_shaderFont.attribLocations[ATTRIB_COLOR], 1, 1, 1, 1 );
+        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2( s_fontPoints, 0 ) );
+        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2( s_fontPoints, 8 ) );
         glDrawArrays( GL_TRIANGLE_STRIP, 0, s_numFontPoints );
         error();
         
@@ -515,15 +517,14 @@ static void setIdle( const bool in_IDLE ) {
 static void setString( const char * in_STRING ) {
     if ( !s_fontMap ) return;
     
-    puts( in_STRING );
-    
     free_s( s_string );
     const size_t size = strlen( in_STRING ) + 1;
     s_string = malloc( size * sizeof( char ) );
     strncpy( s_string, in_STRING, size );
     
     free_s( s_fontPoints );
-    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, s_fontMap, s_string, 32, 128, 48 );
+    float width = 0;
+    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 128, 48, 1.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
     s_lifeTime = timeGet() + LIFE_TIME;
 }
 

@@ -93,7 +93,7 @@ void initGL( const int in_WIDTH, const int in_HEIGHT ) {
     glxPrintInteger( GL_IMPLEMENTATION_COLOR_READ_FORMAT );
     
     timeReset();
-    play = e_playgroundFont;
+    play = e_playgroundAudioVisualizer;
     play.init( in_WIDTH, in_HEIGHT );
 }
 

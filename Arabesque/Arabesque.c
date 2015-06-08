@@ -11,8 +11,8 @@
 #include "../colorspace.h"
 #include "../globaltime.h"
 #include "../Math3D.h"
-#include "../OpenGLES2Core.h"
 #include "../noise.h"
+#include "../OpenGLES2Core.h"
 
 #include <assert.h>
 #include <iso646.h>
@@ -287,7 +287,7 @@ static void update() {
     float w = s_screenAspect * ( 1.0f + scale );
     float h = 1.0f + scale;
     
-    vec2 shift = { { shiftX, shiftY } };
+    vec2 shift = { shiftX, shiftY };
     mat2 rot = mat2MakeRotateZ( rotateZ );
     vec2 vec;
     

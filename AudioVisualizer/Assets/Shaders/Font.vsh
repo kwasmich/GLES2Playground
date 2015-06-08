@@ -7,8 +7,10 @@
 //
 
 attribute vec4 a_position;
+attribute vec4 a_color;
 attribute vec2 a_texCoord;
 
+varying lowp vec4 v_color;
 varying lowp vec2 v_texCoord;
 
 uniform float u_textureSize;
@@ -16,6 +18,7 @@ uniform mat4 u_projectionMatrix;
 
 void main()
 {
+    v_color = a_color;
     v_texCoord = a_texCoord / u_textureSize;
     gl_Position = u_projectionMatrix * a_position;
 }

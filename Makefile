@@ -9,24 +9,10 @@ CFLAGS+=`pkg-config --cflags $(LIBS)`
 LDLIBS=-L/opt/vc/lib -lGLESv2 -lEGL -lbcm_host -lpthread -lm
 #-fsanitize=address
 LDLIBS+=`pkg-config --libs $(LIBS)`
-SOURCES=main.c\
-        eglcore.c\
-        glcore.c\
-        globaltime.c\
-        OpenGLES2Core.c\
-        Arabesque/Arabesque.c\
-        AudioVisualizer/AudioVisualizer.c\
-        Clock/Clock.c\
-        FlyingCubes/FlyingCubes.c\
-        Font/Font.c\
-        Font/FreeType3D.c\
-        Font/encoding.c\
-        noise.c\
-        colorspace.c
+SOURCES=$(wildcard *.c)\
+        $(wildcard */*.c)
 OBJECTS=$(SOURCES:%.c=%.o)
-EXECUTABLE=GLES2Playground #${PRODUCT_NAME}
-#SRCROOT=/Users/kwasmich/Developer/RPi
-#PROJECT_NAME=GLES2Playground
+EXECUTABLE=GLES2Playground
 
 all: $(EXECUTABLE)
 
@@ -38,9 +24,11 @@ $(EXECUTABLE): $(OBJECTS)
 #.c.o:
 #	$(CC) $(CFLAGS) -o $@ $<
 
+.PHONY: clean
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
 
+.PHONY: analyse
 analyse:
 	make clean
 	scan-build make

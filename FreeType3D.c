@@ -57,9 +57,6 @@ void ft3dStringToVertexArray( ft3dVertex_t ** out_vertices, uint16_t * out_numVe
             continue;
         }
         
-        vertices[6 * cnt + 0].x = (g->bitMapLeft) * in_SCALE;
-        vertices[6 * cnt + 0].y = (g->bitMapTop) * in_SCALE;
-        vertices[6 * cnt + 0].color = in_COLOR;
         vertices[6 * cnt + 1].x = (g->bitMapLeft) * in_SCALE;
         vertices[6 * cnt + 1].y = (g->bitMapTop) * in_SCALE;
         vertices[6 * cnt + 1].s = g->posX;
@@ -80,9 +77,9 @@ void ft3dStringToVertexArray( ft3dVertex_t ** out_vertices, uint16_t * out_numVe
         vertices[6 * cnt + 4].s = g->posX + g->bitMapWidth;
         vertices[6 * cnt + 4].t = g->posY + g->bitMapHeight;
         vertices[6 * cnt + 4].color = in_COLOR;
-        vertices[6 * cnt + 5].x = (g->bitMapLeft + g->bitMapWidth) * in_SCALE;
-        vertices[6 * cnt + 5].y = (g->bitMapTop - g->bitMapHeight) * in_SCALE;
-        vertices[6 * cnt + 5].color = in_COLOR;
+        
+        vertices[6 * cnt + 0] = vertices[6 * cnt + 1];
+        vertices[6 * cnt + 5] = vertices[6 * cnt + 4];
         
         if ( in_TOP_DOWN ) {
             for ( int i = 0; i < 6; i++ ) {
