@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 
 #include <execinfo.h>
 
@@ -46,10 +47,10 @@ typedef struct {
 
 
 static VertexData_t s_vertices[4] = {
-    {    0,    0, 255,   0,   0, 255, 0, 1 },
-    {    0, 1024,   0, 255,   0, 255, 0, 0 },
-    { 1024,    0,   0,   0, 255, 255, 1, 1 },
-    { 1024, 1024, 255, 255, 255, 255, 1, 0 },
+    {    0,    0, 255,   0,   0, 255, 0, 1, 0, 0 },
+    {    0, 1024,   0, 255,   0, 255, 0, 0, 0, 0 },
+    { 1024,    0,   0,   0, 255, 255, 1, 1, 0, 0 },
+    { 1024, 1024, 255, 255, 255, 255, 1, 0, 0, 0 },
 };
 
 static vec4 s_clockArrows;
@@ -100,7 +101,7 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
     
     glUseProgram( s_shaderClock.programObject );
     glUniformMatrix4fv( s_shaderClock.uniformLocations[UNIFORM_PROJECTION_MATRIX], 1, 0, projectionMatrix.m );
-    glUniform1iv( s_shaderClock.uniformLocations[UNIFORM_TEXTURE], 5, (GLuint[5]){ 0, 1, 2, 3, 4 } );
+    glUniform1iv( s_shaderClock.uniformLocations[UNIFORM_TEXTURE], 5, (GLint[5]){ 0, 1, 2, 3, 4 } );
     error();
 }
 
@@ -122,8 +123,8 @@ static void update() {
     m = m * 2 * M_PI / 60.0f;
     h = h * 2 * M_PI / 12.0f;
     
-    s_clockArrows = (vec4){ M_PI_2 - h, -m, M_PI_2 - s, M_PI_2 - s };
-    //s_clockArrows = (vec4){ 0, 0, 0, 0 };
+    s_clockArrows = VEC4( M_PI_2 - h, -m, M_PI_2 - s, M_PI_2 - s );
+    //s_clockArrows = VEC4( 0, 0, 0, 0 );
 
 }
 

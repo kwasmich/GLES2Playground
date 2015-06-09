@@ -1,5 +1,6 @@
 #include "eglcore.h"
 #include "globaltime.h"
+#include "lib.h"
 #include "playground.h"
 
 #include <bcm_host.h>
@@ -20,7 +21,7 @@ extern GLES2Playground_t e_playgroundAudioVisualizer;
 static const uint16_t s_DISPLAY_NUMBER = 0; // LCD = 0
 
 static pthread_t s_renderingThread;
-volatile static sig_atomic_t s_renderingThreadAlive = 1;
+static volatile sig_atomic_t s_renderingThreadAlive = 1;
 static uint32_t s_screenWidth = 0;
 static uint32_t s_screenHeight = 0;
 static uint32_t s_screenFrameRate = 1;
@@ -81,7 +82,7 @@ static void terminated( const int in_SIG ) {
 
 
 
-static void * glThread( void * argument ) {
+static void * glThread( void * UNUSED( argument ) ) {
     float s_timeStamp = 0;
 	uint32_t frameCounter = 0;
     
@@ -109,7 +110,7 @@ static void * glThread( void * argument ) {
 
 
 
-int main( int argc, char * argv[] ) {
+int main( int UNUSED( argc ), char * UNUSED( argv[] ) ) {
 	atexit( destroy );
 	signal( SIGHUP, terminated );
 	signal( SIGINT, terminated );

@@ -15,6 +15,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 
 
@@ -43,10 +44,10 @@ void initGL( const int in_WIDTH, const int in_HEIGHT ) {
     glxPrintInteger( GL_SAMPLES );
     glxPrintInteger( GL_NUM_COMPRESSED_TEXTURE_FORMATS );
     
-    GLuint numCompressedTextureFormats;
+    GLint numCompressedTextureFormats;
     glGetIntegerv( GL_NUM_COMPRESSED_TEXTURE_FORMATS, &numCompressedTextureFormats );
     
-    GLuint *compressedTextureFormats = malloc( sizeof(GLuint) * numCompressedTextureFormats );
+    GLint *compressedTextureFormats = malloc( sizeof(GLuint) * numCompressedTextureFormats );
     glGetIntegerv( GL_COMPRESSED_TEXTURE_FORMATS, compressedTextureFormats );
     
     for ( int i = 0; i < numCompressedTextureFormats; i++ ) {
@@ -57,10 +58,10 @@ void initGL( const int in_WIDTH, const int in_HEIGHT ) {
     
     glxPrintInteger( GL_NUM_SHADER_BINARY_FORMATS );
 
-    GLuint numShaderBinaryFormats;
+    GLint numShaderBinaryFormats;
     glGetIntegerv( GL_NUM_SHADER_BINARY_FORMATS, &numShaderBinaryFormats );
     
-    GLuint *shaderBinaryFormats = malloc( sizeof(GLuint) * numShaderBinaryFormats );
+    GLint *shaderBinaryFormats = malloc( sizeof(GLuint) * numShaderBinaryFormats );
     glGetIntegerv( GL_SHADER_BINARY_FORMATS, shaderBinaryFormats );
     
     for ( int i = 0; i < numShaderBinaryFormats; i++ ) {
@@ -93,7 +94,7 @@ void initGL( const int in_WIDTH, const int in_HEIGHT ) {
     glxPrintInteger( GL_IMPLEMENTATION_COLOR_READ_FORMAT );
     
     timeReset();
-    play = e_playgroundAudioVisualizer;
+    play = e_playgroundFont;
     play.init( in_WIDTH, in_HEIGHT );
 }
 

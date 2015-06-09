@@ -1,7 +1,7 @@
 #CCC_CC=clang
 #CC=clang
 LIBS=
-CFLAGS=-g -std=gnu1x -Wall -pedantic -Wno-gnu -Wno-variadic-macros -O0
+CFLAGS=-g -std=gnu1x -Wall -Wextra -pedantic -Wno-gnu -Wno-variadic-macros -O0
 #--analyze
 #-fsanitize=address -fno-omit-frame-pointer -funwind-tables -rdynamic
 CFLAGS+=-I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux
