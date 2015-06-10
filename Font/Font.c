@@ -194,7 +194,7 @@ static void setString( const char * in_STRING ) {
     
     free_s( s_fontPoints );
     float width = 0;
-    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 528, 148, 4.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
+    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 128, 48, 1.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
     s_lifeTime = timeGet() + LIFE_TIME;
 }
 

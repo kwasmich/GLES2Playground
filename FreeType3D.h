@@ -19,9 +19,9 @@
 typedef struct {
     uint16_t charCode;                  // only the first 65536 unicode glyphs
     uint16_t posX, posY;                // assuming a font map does not exceed 65536 x 65536 px
-    int8_t bitMapLeft, bitMapTop;
-    uint8_t bitMapWidth, bitMapHeight;  // assuming a single glyph does not exceed 256 x 256 px
-    uint8_t advance;
+    int16_t bitMapLeft, bitMapTop;
+    uint16_t bitMapWidth, bitMapHeight; // assuming a single glyph does not exceed 65536 x 65536 px
+    uint16_t advance;
 } ft3dFontMap_t;
 
 
