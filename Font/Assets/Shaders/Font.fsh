@@ -15,5 +15,6 @@ void main()
 {
     lowp vec4 fragColor = v_color;
     fragColor.a = texture2D( u_texture, v_texCoord ).r;
+    //fragColor.a = smoothstep( 0.49, 0.51, texture2D( u_texture, v_texCoord ).r );
     gl_FragColor = fragColor;
 }

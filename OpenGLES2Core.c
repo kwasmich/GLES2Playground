@@ -208,8 +208,8 @@ GLuint createTextureObject( const char* in_FILE_NAME, const GLenum in_INTERNAL_F
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
             assert( false );
         } else {
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
             glTexImage2D( GL_TEXTURE_2D, 0, format, dim, dim, 0, format, GL_UNSIGNED_BYTE, rawImageData );
         }
     }
