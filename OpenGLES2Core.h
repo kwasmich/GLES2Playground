@@ -24,7 +24,7 @@ typedef enum {
     UNIFORM_NORMAL_MATRIX,
     UNIFORM_EC_LIGHT_POSITION,
     UNIFORM_COLOR,
-	UNIFORM_TEXTURE,
+    UNIFORM_TEXTURE,
     UNIFORM_TEXTURE_SIZE,
     UNIFORM_VEC4,
     NUM_UNIFORMS
@@ -48,15 +48,15 @@ typedef struct {
 
 
 
-Shader_t createProgramObject( const GLuint in_VERTEX_SHADER, const GLuint in_FRAGMENT_SHADER );
-GLuint createShaderObject( const char* in_FILE_NAME, const GLenum in_SHADER_TYPE );
+Shader_t createProgramObject(const GLuint in_VERTEX_SHADER, const GLuint in_FRAGMENT_SHADER);
+GLuint createShaderObject(const char *in_FILE_NAME, const GLenum in_SHADER_TYPE);
 
-GLuint createTextureObject( const char* in_FILE_NAME, const GLenum in_INTERNAL_FORMAT );
+GLuint createTextureObject(const char *in_FILE_NAME, const GLenum in_INTERNAL_FORMAT);
 
-char* createStringFromFileContents( const char* in_FILE_NAME );
-char* glEnumToCString( const GLenum in_ENUM );
+char *createStringFromFileContents(const char *in_FILE_NAME);
+char *glEnumToCString(const GLenum in_ENUM);
 
-unsigned char* rawFromFileContents( const char* in_FILE_NAME, const bool in_ZERO_TERMINATE, int * out_fileSize );
+unsigned char *rawFromFileContents(const char *in_FILE_NAME, const bool in_ZERO_TERMINATE, int *out_fileSize);
 
 
 #define glxPrintInteger(X) GLint x_##X; glGetIntegerv( X, &x_##X ); printf( "%-40s: %i\n", #X, x_##X );

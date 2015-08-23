@@ -24,7 +24,7 @@ typedef struct {
 } hsl_t;
 
 
-hsl_t colorspaceConvertRGB2HSL( const rgb8_t in_RGB );
-rgb8_t colorspaceConvertHSL2RGB( const hsl_t in_HSL );
+hsl_t colorspaceConvertRGB2HSL(const rgb8_t in_RGB);
+rgb8_t colorspaceConvertHSL2RGB(const hsl_t in_HSL);
 
 #endif

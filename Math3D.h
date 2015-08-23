@@ -17,9 +17,15 @@
 
 
 typedef union {
-    struct { float x, y; };
-    struct { float l, a; };
-    struct { float s, t; };
+    struct {
+        float x, y;
+    };
+    struct {
+        float l, a;
+    };
+    struct {
+        float s, t;
+    };
     float v[2];
 } vec2;
 
@@ -28,11 +34,22 @@ typedef union {
 
 
 typedef union {
-    struct { float x, y, z; };
-    struct { vec2 xy; };
-    struct { float x_; vec2 yz; };
-    struct { float r, g, b; };
-    struct { float s, t, p; };
+    struct {
+        float x, y, z;
+    };
+    struct {
+        vec2 xy;
+    };
+    struct {
+        float x_;
+        vec2 yz;
+    };
+    struct {
+        float r, g, b;
+    };
+    struct {
+        float s, t, p;
+    };
     float v[3];
 } vec3;
 
@@ -41,12 +58,25 @@ typedef union {
 
 
 typedef union {
-    struct { float x, y, z, w; };
-    struct { vec2 xy; };
-    struct { float x_; vec2 yz; };
-    struct { vec3 xyz; };
-    struct { float r, g, b, a; };
-    struct { float s, t, p, q; };
+    struct {
+        float x, y, z, w;
+    };
+    struct {
+        vec2 xy;
+    };
+    struct {
+        float x_;
+        vec2 yz;
+    };
+    struct {
+        vec3 xyz;
+    };
+    struct {
+        float r, g, b, a;
+    };
+    struct {
+        float s, t, p, q;
+    };
     float v[4];
 } vec4;
 
@@ -108,12 +138,12 @@ typedef union {
 #define glmAcosh(X)    GENERIC_SV(acosh, X)
 #define glmAtanh(X)    GENERIC_SV(atanh, X)
 
-extern vec2 sinf2( const vec2 in_X );
-extern vec3 sinf3( const vec3 in_X );
-extern vec4 sinf4( const vec4 in_X );
-extern vec2 cosf2( const vec2 in_X );
-extern vec3 cosf3( const vec3 in_X );
-extern vec4 cosf4( const vec4 in_X );
+extern vec2 sinf2(const vec2 in_X);
+extern vec3 sinf3(const vec3 in_X);
+extern vec4 sinf4(const vec4 in_X);
+extern vec2 cosf2(const vec2 in_X);
+extern vec3 cosf3(const vec3 in_X);
+extern vec4 cosf4(const vec4 in_X);
 
 
 
@@ -176,27 +206,27 @@ extern vec4 cosf4( const vec4 in_X );
 
 
 #define glmMatSet(X, S) _Generic((X), \
-mat2: mat2Set, \
-mat3: mat3Set, \
-mat4: mat4Set)(X, S)
+                                 mat2: mat2Set, \
+                                 mat3: mat3Set, \
+                                 mat4: mat4Set)(X, S)
 
 #define glmInverseTranspose(X) _Generic((X), \
-mat2: mat2InverseTranspose, \
-mat3: mat3InverseTranspose, \
-mat4: mat4InverseTranspose)(X)
+                                        mat2: mat2InverseTranspose, \
+                                        mat3: mat3InverseTranspose, \
+                                        mat4: mat4InverseTranspose)(X)
 
 
 
 
 
 //abs, clamp, smoothstep, min, max, floor
-static inline float signf( const float in_X );
-static inline float fractf( const float in_X );
-static inline float mixf( const float in_X, const float in_Y, const float in_A );
-static inline float stepf( const float in_EDGE, const float in_X );
-static inline float smoothstepf( const float in_EDGE_0, const float in_EDGE_1, const float in_X );
-static inline float inverseSQRT( const float in_S );
-static inline float fastInverseSQRT( const float in_S );
+static inline float signf(const float in_X);
+static inline float fractf(const float in_X);
+static inline float mixf(const float in_X, const float in_Y, const float in_A);
+static inline float stepf(const float in_EDGE, const float in_X);
+static inline float smoothstepf(const float in_EDGE_0, const float in_EDGE_1, const float in_X);
+static inline float inverseSQRT(const float in_S);
+static inline float fastInverseSQRT(const float in_S);
 
 
 
@@ -213,105 +243,119 @@ static inline float fastInverseSQRT( const float in_S );
 // 2 6 10 14
 // 3 7 11 15
 typedef union {
-    struct { float m00, m10, m01, m11; };
-    struct { vec2 v0, v1; }; 
+    struct {
+        float m00, m10, m01, m11;
+    };
+    struct {
+        vec2 v0, v1;
+    };
     float m[4];
 } mat2;
 
 typedef union {
-    struct { float m00, m10, m20, m01, m11, m21, m02, m12, m22; };
-    struct { vec3 v0, v1, v2; }; 
+    struct {
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+    };
+    struct {
+        vec3 v0, v1, v2;
+    };
     float m[9];
 } mat3;
 
 typedef union {
-    struct { float m00, m10, m20, m30, m01, m11, m21, m31, m02, m12, m22, m32, m03, m13, m23, m33; };
-    struct { vec4 v0, v1, v2, v3; }; 
+    struct {
+        float m00, m10, m20, m30, m01, m11, m21, m31, m02, m12, m22, m32, m03, m13, m23, m33;
+    };
+    struct {
+        vec4 v0, v1, v2, v3;
+    };
     float m[16];
 } mat4;
 
 
 
-static inline mat2 mat2Make( const float in_M00, const float in_M10, const float in_M01, const float in_M11 );
-static inline mat3 mat3Make( const float in_M00, const float in_M10, const float in_M20, const float in_M01, const float in_M11, const float in_M21, const float in_M02, const float in_M12, const float in_M22 );
-static inline mat4 mat4Make( const float in_M00, const float in_M10, const float in_M20, const float in_M30, const float in_M01, const float in_M11, const float in_M21, const float in_M31, const float in_M02, const float in_M12, const float in_M22, const float in_M32, const float in_M03, const float in_M13, const float in_M23, const float in_M33 );
+static inline mat2 mat2Make(const float in_M00, const float in_M10, const float in_M01, const float in_M11);
+static inline mat3 mat3Make(const float in_M00, const float in_M10, const float in_M20, const float in_M01, const float in_M11, const float in_M21, const float in_M02, const float in_M12,
+                            const float in_M22);
+static inline mat4 mat4Make(const float in_M00, const float in_M10, const float in_M20, const float in_M30, const float in_M01, const float in_M11, const float in_M21, const float in_M31,
+                            const float in_M02, const float in_M12, const float in_M22, const float in_M32, const float in_M03, const float in_M13, const float in_M23, const float in_M33);
 
-static inline mat2 mat2MakeWithDiagonal( const float in_S );
-static inline mat3 mat3MakeWithDiagonal( const float in_S );
-static inline mat4 mat4MakeWithDiagonal( const float in_S );
+static inline mat2 mat2MakeWithDiagonal(const float in_S);
+static inline mat3 mat3MakeWithDiagonal(const float in_S);
+static inline mat4 mat4MakeWithDiagonal(const float in_S);
 
-static inline mat2 mat2MakeWithColumns( const vec2 in_V0, const vec2 in_V1 );
-static inline mat3 mat3MakeWithColumns( const vec2 in_V0, const vec2 in_V1, const vec2 in_V2 );
-static inline mat4 mat4MakeWithColumns( const vec2 in_V0, const vec2 in_V1, const vec2 in_V2, const vec2 in_V3 );
+static inline mat2 mat2MakeWithColumns(const vec2 in_V0, const vec2 in_V1);
+static inline mat3 mat3MakeWithColumns(const vec2 in_V0, const vec2 in_V1, const vec2 in_V2);
+static inline mat4 mat4MakeWithColumns(const vec2 in_V0, const vec2 in_V1, const vec2 in_V2, const vec2 in_V3);
 
-static inline mat4 mat4MakeOrtho( const float in_L, const float in_R, const float in_B, const float in_T, const float in_N, const float in_F );
-static inline mat4 mat4MakeFrustum( const float in_L, const float in_R, const float in_B, const float in_T, const float in_N, const float in_F );
-static inline mat4 mat4MakePerspective( const float in_FOV_RADIANS, const float in_AR, const float in_N, const float in_F );
-static inline mat4 mat4MakeRotate( const float in_RADIANS, const vec3 in_V );
-static inline mat4 mat4MakeRotateX( const float in_RADIANS );
-static inline mat4 mat4MakeRotateY( const float in_RADIANS );
-static inline mat4 mat4MakeRotateZ( const float in_RADIANS );
-static inline mat4 mat4MakeScale( const float in_S );
-static inline mat4 mat4MakeTranslate( const vec3 in_V );
-
-
+static inline mat4 mat4MakeOrtho(const float in_L, const float in_R, const float in_B, const float in_T, const float in_N, const float in_F);
+static inline mat4 mat4MakeFrustum(const float in_L, const float in_R, const float in_B, const float in_T, const float in_N, const float in_F);
+static inline mat4 mat4MakePerspective(const float in_FOV_RADIANS, const float in_AR, const float in_N, const float in_F);
+static inline mat4 mat4MakeRotate(const float in_RADIANS, const vec3 in_V);
+static inline mat4 mat4MakeRotateX(const float in_RADIANS);
+static inline mat4 mat4MakeRotateY(const float in_RADIANS);
+static inline mat4 mat4MakeRotateZ(const float in_RADIANS);
+static inline mat4 mat4MakeScale(const float in_S);
+static inline mat4 mat4MakeTranslate(const vec3 in_V);
 
 
 
-static inline float signf( const float in_X ) {
-	float result = 0;
-	result = ( in_X < 0 ) ? -1 : result;
-	result = ( in_X > 0 ) ?  1 : result;
-	return result;
+
+
+static inline float signf(const float in_X) {
+    float result = 0;
+    result = (in_X < 0) ? -1 : result;
+    result = (in_X > 0) ?  1 : result;
+    return result;
 }
 
 // I'm not sure if this is correct for negative numbers
-static inline float fractf( const float in_X ) {
-	return in_X - floorf( in_X );
+static inline float fractf(const float in_X) {
+    return in_X - floorf(in_X);
 }
 
-static inline float clampf( const float in_X, const float in_MIN, const float in_MAX ) {
-	return fminf( fmaxf( in_X, in_MIN ), in_MAX );
+static inline float clampf(const float in_X, const float in_MIN, const float in_MAX) {
+    return fminf(fmaxf(in_X, in_MIN), in_MAX);
 }
 
-extern vec2 clampf2( const vec2 in_X, const vec2 in_MIN, const vec2 in_MAX );
-extern vec2 clampf2f( const vec2 in_X, const float in_MIN, const float in_MAX );
-extern vec3 clampf3( const vec3 in_X, const vec3 in_MIN, const vec3 in_MAX );
-extern vec3 clampf3f( const vec3 in_X, const float in_MIN, const float in_MAX );
-extern vec4 clampf4( const vec4 in_X, const vec4 in_MIN, const vec4 in_MAX );
-extern vec4 clampf4f( const vec4 in_X, const float in_MIN, const float in_MAX );
+extern vec2 clampf2(const vec2 in_X, const vec2 in_MIN, const vec2 in_MAX);
+extern vec2 clampf2f(const vec2 in_X, const float in_MIN, const float in_MAX);
+extern vec3 clampf3(const vec3 in_X, const vec3 in_MIN, const vec3 in_MAX);
+extern vec3 clampf3f(const vec3 in_X, const float in_MIN, const float in_MAX);
+extern vec4 clampf4(const vec4 in_X, const vec4 in_MIN, const vec4 in_MAX);
+extern vec4 clampf4f(const vec4 in_X, const float in_MIN, const float in_MAX);
 
-static inline float mixf( const float in_X, const float in_Y, const float in_A ) {
-	return fmaf( in_A, in_Y - in_X, in_X );
+static inline float mixf(const float in_X, const float in_Y, const float in_A) {
+    return fmaf(in_A, in_Y - in_X, in_X);
 }
 
-static inline float stepf( const float in_EDGE, const float in_X ) {
-	return ( in_X < in_EDGE ) ? 0 : 1;
+static inline float stepf(const float in_EDGE, const float in_X) {
+    return (in_X < in_EDGE) ? 0 : 1;
 }
 
-static inline float smoothstepf( const float in_EDGE_0, const float in_EDGE_1, const float in_X ) {
-	float t = clampf( ( in_X - in_EDGE_0 ) / ( in_EDGE_1 - in_EDGE_0 ), 0, 1 );
-	return t * t * ( 3.0f - 2.0f * t );
+static inline float smoothstepf(const float in_EDGE_0, const float in_EDGE_1, const float in_X) {
+    float t = clampf((in_X - in_EDGE_0) / (in_EDGE_1 - in_EDGE_0), 0, 1);
+    return t * t * (3.0f - 2.0f * t);
 }
 
-static inline float inverseSQRT( const float in_S ) {
-    return 1.0f / sqrtf( in_S );
+static inline float inverseSQRT(const float in_S) {
+    return 1.0f / sqrtf(in_S);
 }
 
-static inline float fastInverseSQRT( const float in_S ) {
+static inline float fastInverseSQRT(const float in_S) {
     // use SSE's rsqrtss instead
     float xhalf = 0.5f * in_S;
-    
+
     union {
         float f;
         unsigned int i;
     } fi;
-    
+
     fi.f = in_S;
     fi.i = 0x5f375a86 - (fi.i >> 1);
     fi.f = fi.f * (1.5f - xhalf * fi.f * fi.f);
     return fi.f;
-    
+
     //unsigned int i = *(unsigned int*)&in_S;
     //i = 0x5f375a86 - (i >> 1);
     //float tmp = *(float*)&i;
@@ -321,83 +365,103 @@ static inline float fastInverseSQRT( const float in_S ) {
 }
 
 
-static inline void print_f( const float* in_S ) {
-    puts( "float:" );
-    printf( "%f\n", *in_S );
+static inline void print_f(const float *in_S) {
+    puts("float:");
+    printf("%f\n", *in_S);
 }
 
-static inline void print_f2( const vec2* in_V ) {
-    puts( "vec2:" );
-    printf( "( %f, %f )\n", in_V->v[0], in_V->v[1] );
+static inline void print_f2(const vec2 *in_V) {
+    puts("vec2:");
+    printf("( %f, %f )\n", in_V->v[0], in_V->v[1]);
 }
 
-static inline void print_f3( const vec3* in_V ) {
-    puts( "vec3:" );
-    printf( "( %f, %f, %f )\n", in_V->v[0], in_V->v[1], in_V->v[2] );
+static inline void print_f3(const vec3 *in_V) {
+    puts("vec3:");
+    printf("( %f, %f, %f )\n", in_V->v[0], in_V->v[1], in_V->v[2]);
 }
 
-static inline void print_f4( const vec4* in_V ) {
-    puts( "vec4:" );
-    printf( "( %f, %f, %f, %f )\n", in_V->v[0], in_V->v[1], in_V->v[2], in_V->v[3] );
+static inline void print_f4(const vec4 *in_V) {
+    puts("vec4:");
+    printf("( %f, %f, %f, %f )\n", in_V->v[0], in_V->v[1], in_V->v[2], in_V->v[3]);
 }
 
-static inline void print_m2( const mat2* in_M ) {
-    puts( "mat2:" );
-    printf( "%f %f\n", in_M->m[0], in_M->m[2] );
-    printf( "%f %f\n", in_M->m[1], in_M->m[3] );
+static inline void print_m2(const mat2 *in_M) {
+    puts("mat2:");
+    printf("%f %f\n", in_M->m[0], in_M->m[2]);
+    printf("%f %f\n", in_M->m[1], in_M->m[3]);
 }
 
-static inline void print_m3( const mat3* in_M ) {
-    puts( "mat3:" );
-    printf( "%f %f %f\n", in_M->m[0], in_M->m[3], in_M->m[6] );
-    printf( "%f %f %f\n", in_M->m[1], in_M->m[4], in_M->m[7] );
-    printf( "%f %f %f\n", in_M->m[2], in_M->m[5], in_M->m[8] );
+static inline void print_m3(const mat3 *in_M) {
+    puts("mat3:");
+    printf("%f %f %f\n", in_M->m[0], in_M->m[3], in_M->m[6]);
+    printf("%f %f %f\n", in_M->m[1], in_M->m[4], in_M->m[7]);
+    printf("%f %f %f\n", in_M->m[2], in_M->m[5], in_M->m[8]);
 }
 
-static inline void print_m4( const mat4* in_M ) {
-    puts( "mat4:" );
-    printf( "%f %f %f %f\n", in_M->m[0], in_M->m[4], in_M->m[8],  in_M->m[12] );
-    printf( "%f %f %f %f\n", in_M->m[1], in_M->m[5], in_M->m[9],  in_M->m[13] );
-    printf( "%f %f %f %f\n", in_M->m[2], in_M->m[6], in_M->m[10], in_M->m[14] );
-    printf( "%f %f %f %f\n", in_M->m[3], in_M->m[7], in_M->m[11], in_M->m[15] );
+static inline void print_m4(const mat4 *in_M) {
+    puts("mat4:");
+    printf("%f %f %f %f\n", in_M->m[0], in_M->m[4], in_M->m[8],  in_M->m[12]);
+    printf("%f %f %f %f\n", in_M->m[1], in_M->m[5], in_M->m[9],  in_M->m[13]);
+    printf("%f %f %f %f\n", in_M->m[2], in_M->m[6], in_M->m[10], in_M->m[14]);
+    printf("%f %f %f %f\n", in_M->m[3], in_M->m[7], in_M->m[11], in_M->m[15]);
 }
 
-static inline mat2 mat2MakeWithDiagonal( const float in_S ) {
+static inline mat2 mat2MakeWithDiagonal(const float in_S) {
     mat2 m;
-    m.m[0] = in_S;  m.m[2] = 0;
-    m.m[1] = 0;     m.m[3] = in_S;
+    m.m[0] = in_S;
+    m.m[2] = 0;
+    m.m[1] = 0;
+    m.m[3] = in_S;
     return m;
 }
 
-static inline mat3 mat3MakeWithDiagonal( const float in_S ) {
+static inline mat3 mat3MakeWithDiagonal(const float in_S) {
     mat3 m;
-    m.m[0] = in_S;  m.m[3] = 0;     m.m[6] = 0;
-    m.m[1] = 0;     m.m[4] = in_S;  m.m[7] = 0;
-    m.m[2] = 0;     m.m[5] = 0;     m.m[8] = in_S;
+    m.m[0] = in_S;
+    m.m[3] = 0;
+    m.m[6] = 0;
+    m.m[1] = 0;
+    m.m[4] = in_S;
+    m.m[7] = 0;
+    m.m[2] = 0;
+    m.m[5] = 0;
+    m.m[8] = in_S;
     return m;
 }
 
-static inline mat4 mat4MakeWithDiagonal( const float in_S ) {
+static inline mat4 mat4MakeWithDiagonal(const float in_S) {
     mat4 m;
-    m.m[0] = in_S;  m.m[4] = 0;     m.m[8]  = 0;    m.m[12] = 0;
-    m.m[1] = 0;     m.m[5] = in_S;  m.m[9]  = 0;    m.m[13] = 0;
-    m.m[2] = 0;     m.m[6] = 0;     m.m[10] = in_S; m.m[14] = 0;
-    m.m[3] = 0;     m.m[7] = 0;     m.m[11] = 0;    m.m[15] = in_S;
+    m.m[0] = in_S;
+    m.m[4] = 0;
+    m.m[8]  = 0;
+    m.m[12] = 0;
+    m.m[1] = 0;
+    m.m[5] = in_S;
+    m.m[9]  = 0;
+    m.m[13] = 0;
+    m.m[2] = 0;
+    m.m[6] = 0;
+    m.m[10] = in_S;
+    m.m[14] = 0;
+    m.m[3] = 0;
+    m.m[7] = 0;
+    m.m[11] = 0;
+    m.m[15] = in_S;
     return m;
 }
 
-static inline float addf( const float in_A, const float in_B ) {
+static inline float addf(const float in_A, const float in_B) {
     return in_A + in_B;
 }
 
-static inline vec2 addf2( const vec2 in_A, const vec2 in_B ) {
+static inline vec2 addf2(const vec2 in_A, const vec2 in_B) {
     vec2 v;
     v.v[0] = in_A.v[0] + in_B.v[0];
     v.v[1] = in_A.v[1] + in_B.v[1];
     return v;
 }
 
-static inline vec3 addf3( const vec3 in_A, const vec3 in_B ) {
+static inline vec3 addf3(const vec3 in_A, const vec3 in_B) {
     vec3 v;
     v.v[0] = in_A.v[0] + in_B.v[0];
     v.v[1] = in_A.v[1] + in_B.v[1];
@@ -405,7 +469,7 @@ static inline vec3 addf3( const vec3 in_A, const vec3 in_B ) {
     return v;
 }
 
-static inline vec4 addf4( const vec4 in_A, const vec4 in_B ) {
+static inline vec4 addf4(const vec4 in_A, const vec4 in_B) {
     vec4 v;
     v.v[0] = in_A.v[0] + in_B.v[0];
     v.v[1] = in_A.v[1] + in_B.v[1];
@@ -414,7 +478,7 @@ static inline vec4 addf4( const vec4 in_A, const vec4 in_B ) {
     return v;
 }
 
-static inline mat2 addm2( const mat2 in_A, const mat2 in_B ) {
+static inline mat2 addm2(const mat2 in_A, const mat2 in_B) {
     mat2 m;
     m.m[0] = in_A.m[0] + in_B.m[0];
     m.m[1] = in_A.m[1] + in_B.m[1];
@@ -423,7 +487,7 @@ static inline mat2 addm2( const mat2 in_A, const mat2 in_B ) {
     return m;
 }
 
-static inline mat3 addm3( const mat3 in_A, const mat3 in_B ) {
+static inline mat3 addm3(const mat3 in_A, const mat3 in_B) {
     mat3 m;
     m.m[0] = in_A.m[0] + in_B.m[0];
     m.m[1] = in_A.m[1] + in_B.m[1];
@@ -437,7 +501,7 @@ static inline mat3 addm3( const mat3 in_A, const mat3 in_B ) {
     return m;
 }
 
-static inline mat4 addm4( const mat4 in_A, const mat4 in_B ) {
+static inline mat4 addm4(const mat4 in_A, const mat4 in_B) {
     mat4 m;
     m.m[0]  = in_A.m[0]  + in_B.m[0];
     m.m[1]  = in_A.m[1]  + in_B.m[1];
@@ -458,18 +522,18 @@ static inline mat4 addm4( const mat4 in_A, const mat4 in_B ) {
     return m;
 }
 
-static inline float subf( const float in_A, const float in_B ) {
+static inline float subf(const float in_A, const float in_B) {
     return in_A - in_B;
 }
 
-static inline vec2 subf2( const vec2 in_A, const vec2 in_B ) {
+static inline vec2 subf2(const vec2 in_A, const vec2 in_B) {
     vec2 v;
     v.v[0] = in_A.v[0] - in_B.v[0];
     v.v[1] = in_A.v[1] - in_B.v[1];
     return v;
 }
 
-static inline vec3 subf3( const vec3 in_A, const vec3 in_B ) {
+static inline vec3 subf3(const vec3 in_A, const vec3 in_B) {
     vec3 v;
     v.v[0] = in_A.v[0] - in_B.v[0];
     v.v[1] = in_A.v[1] - in_B.v[1];
@@ -477,7 +541,7 @@ static inline vec3 subf3( const vec3 in_A, const vec3 in_B ) {
     return v;
 }
 
-static inline vec4 subf4( const vec4 in_A, const vec4 in_B ) {
+static inline vec4 subf4(const vec4 in_A, const vec4 in_B) {
     vec4 v;
     v.v[0] = in_A.v[0] - in_B.v[0];
     v.v[1] = in_A.v[1] - in_B.v[1];
@@ -486,7 +550,7 @@ static inline vec4 subf4( const vec4 in_A, const vec4 in_B ) {
     return v;
 }
 
-static inline mat2 subm2( const mat2 in_A, const mat2 in_B ) {
+static inline mat2 subm2(const mat2 in_A, const mat2 in_B) {
     mat2 m;
     m.m[0] = in_A.m[0] - in_B.m[0];
     m.m[1] = in_A.m[1] - in_B.m[1];
@@ -495,7 +559,7 @@ static inline mat2 subm2( const mat2 in_A, const mat2 in_B ) {
     return m;
 }
 
-static inline mat3 subm3( const mat3 in_A, const mat3 in_B ) {
+static inline mat3 subm3(const mat3 in_A, const mat3 in_B) {
     mat3 m;
     m.m[0] = in_A.m[0] - in_B.m[0];
     m.m[1] = in_A.m[1] - in_B.m[1];
@@ -509,7 +573,7 @@ static inline mat3 subm3( const mat3 in_A, const mat3 in_B ) {
     return m;
 }
 
-static inline mat4 subm4( const mat4 in_A, const mat4 in_B ) {
+static inline mat4 subm4(const mat4 in_A, const mat4 in_B) {
     mat4 m;
     m.m[0]  = in_A.m[0]  - in_B.m[0];
     m.m[1]  = in_A.m[1]  - in_B.m[1];
@@ -530,14 +594,14 @@ static inline mat4 subm4( const mat4 in_A, const mat4 in_B ) {
     return m;
 }
 
-static inline vec2 mulf2f2( const vec2 in_A, const vec2 in_B ) {
+static inline vec2 mulf2f2(const vec2 in_A, const vec2 in_B) {
     vec2 v;
     v.v[0] = in_A.v[0] * in_B.v[0];
     v.v[1] = in_A.v[1] * in_B.v[1];
     return v;
 }
 
-static inline vec3 mulf3f3( const vec3 in_A, const vec3 in_B ) {
+static inline vec3 mulf3f3(const vec3 in_A, const vec3 in_B) {
     vec3 v;
     v.v[0] = in_A.v[0] * in_B.v[0];
     v.v[1] = in_A.v[1] * in_B.v[1];
@@ -545,7 +609,7 @@ static inline vec3 mulf3f3( const vec3 in_A, const vec3 in_B ) {
     return v;
 }
 
-static inline vec4 mulf4f4( const vec4 in_A, const vec4 in_B ) {
+static inline vec4 mulf4f4(const vec4 in_A, const vec4 in_B) {
     vec4 v;
     v.v[0] = in_A.v[0] * in_B.v[0];
     v.v[1] = in_A.v[1] * in_B.v[1];
@@ -554,7 +618,7 @@ static inline vec4 mulf4f4( const vec4 in_A, const vec4 in_B ) {
     return v;
 }
 
-static inline mat2 mulm2m2( const mat2 in_A, const mat2 in_B ) {
+static inline mat2 mulm2m2(const mat2 in_A, const mat2 in_B) {
     mat2 m;
     m.m[0] = in_A.m[0] * in_B.m[0] + in_A.m[2] * in_B.m[1];
     m.m[1] = in_A.m[1] * in_B.m[0] + in_A.m[3] * in_B.m[1];
@@ -563,7 +627,7 @@ static inline mat2 mulm2m2( const mat2 in_A, const mat2 in_B ) {
     return m;
 }
 
-static inline mat3 mulm3m3( const mat3 in_A, const mat3 in_B ) {
+static inline mat3 mulm3m3(const mat3 in_A, const mat3 in_B) {
     mat3 m;
     m.m[0] = in_A.m[0] * in_B.m[0] + in_A.m[3] * in_B.m[1] + in_A.m[6] * in_B.m[2];
     m.m[1] = in_A.m[1] * in_B.m[0] + in_A.m[4] * in_B.m[1] + in_A.m[7] * in_B.m[2];
@@ -577,7 +641,7 @@ static inline mat3 mulm3m3( const mat3 in_A, const mat3 in_B ) {
     return m;
 }
 
-static inline mat4 mulm4m4( const mat4 in_A, const mat4 in_B ) {
+static inline mat4 mulm4m4(const mat4 in_A, const mat4 in_B) {
     mat4 m;
     m.m[0]  = in_A.m[0] * in_B.m[0]  + in_A.m[4] * in_B.m[1]  + in_A.m[8]  * in_B.m[2]  + in_A.m[12] * in_B.m[3];
     m.m[1]  = in_A.m[1] * in_B.m[0]  + in_A.m[5] * in_B.m[1]  + in_A.m[9]  * in_B.m[2]  + in_A.m[13] * in_B.m[3];
@@ -598,14 +662,14 @@ static inline mat4 mulm4m4( const mat4 in_A, const mat4 in_B ) {
     return m;
 }
 
-static inline vec2 mulf2m2( const vec2 in_V, const mat2 in_M ) {
+static inline vec2 mulf2m2(const vec2 in_V, const mat2 in_M) {
     vec2 v;
     v.v[0] = in_V.v[0] * in_M.m[0] + in_V.v[1] * in_M.m[1]; // v dot m.v0
     v.v[1] = in_V.v[0] * in_M.m[2] + in_V.v[1] * in_M.m[3]; // v dot m.v1
     return v;
 }
 
-static inline vec3 mulf3m3( const vec3 in_V, const mat3 in_M ) {
+static inline vec3 mulf3m3(const vec3 in_V, const mat3 in_M) {
     vec3 v;
     v.v[0] = in_V.v[0] * in_M.m[0] + in_V.v[1] * in_M.m[1] + in_V.v[2] * in_M.m[2]; // v dot m.v0
     v.v[1] = in_V.v[0] * in_M.m[3] + in_V.v[1] * in_M.m[4] + in_V.v[2] * in_M.m[5]; // v dot m.v1
@@ -613,7 +677,7 @@ static inline vec3 mulf3m3( const vec3 in_V, const mat3 in_M ) {
     return v;
 }
 
-static inline vec4 mulf4m4( const vec4 in_V, const mat4 in_M ) {
+static inline vec4 mulf4m4(const vec4 in_V, const mat4 in_M) {
     vec4 v;
     v.v[0] = in_V.v[0] * in_M.m[0]  + in_V.v[1] * in_M.m[1]  + in_V.v[2] * in_M.m[2]  + in_V.v[3] * in_M.m[3];  // v dot m.v0
     v.v[1] = in_V.v[0] * in_M.m[4]  + in_V.v[1] * in_M.m[5]  + in_V.v[2] * in_M.m[6]  + in_V.v[3] * in_M.m[7];  // v dot m.v1
@@ -622,14 +686,14 @@ static inline vec4 mulf4m4( const vec4 in_V, const mat4 in_M ) {
     return v;
 }
 
-static inline vec2 mulm2f2( const mat2 in_M, const vec2 in_V ) {
+static inline vec2 mulm2f2(const mat2 in_M, const vec2 in_V) {
     vec2 v;
     v.v[0] = in_M.m[0] * in_V.v[0] + in_M.m[2] * in_V.v[1] ;
     v.v[1] = in_M.m[1] * in_V.v[0] + in_M.m[3] * in_V.v[1] ;
     return v;
 }
 
-static inline vec3 mulm3f3( const mat3 in_M, const vec3 in_V ) {
+static inline vec3 mulm3f3(const mat3 in_M, const vec3 in_V) {
     vec3 v;
     v.v[0] = in_M.m[0] * in_V.v[0] + in_M.m[3] * in_V.v[1] + in_M.m[6] * in_V.v[2];
     v.v[1] = in_M.m[1] * in_V.v[0] + in_M.m[4] * in_V.v[1] + in_M.m[7] * in_V.v[2];
@@ -637,7 +701,7 @@ static inline vec3 mulm3f3( const mat3 in_M, const vec3 in_V ) {
     return v;
 }
 
-static inline vec4 mulm4f4( const mat4 in_M, const vec4 in_V ) {
+static inline vec4 mulm4f4(const mat4 in_M, const vec4 in_V) {
     vec4 v;
     v.v[0] = in_M.m[0] * in_V.v[0] + in_M.m[4] * in_V.v[1] + in_M.m[8]  * in_V.v[2] + in_M.m[12] * in_V.v[3];
     v.v[1] = in_M.m[1] * in_V.v[0] + in_M.m[5] * in_V.v[1] + in_M.m[9]  * in_V.v[2] + in_M.m[13] * in_V.v[3];
@@ -646,14 +710,14 @@ static inline vec4 mulm4f4( const mat4 in_M, const vec4 in_V ) {
     return v;
 }
 
-static inline vec2 mulf2f( const vec2 in_V, const float in_S ) {
+static inline vec2 mulf2f(const vec2 in_V, const float in_S) {
     vec2 v;
     v.v[0] = in_V.v[0] * in_S;
     v.v[1] = in_V.v[1] * in_S;
     return v;
 }
 
-static inline vec3 mulf3f( const vec3 in_V, const float in_S ) {
+static inline vec3 mulf3f(const vec3 in_V, const float in_S) {
     vec3 v;
     v.v[0] = in_V.v[0] * in_S;
     v.v[1] = in_V.v[1] * in_S;
@@ -661,7 +725,7 @@ static inline vec3 mulf3f( const vec3 in_V, const float in_S ) {
     return v;
 }
 
-static inline vec4 mulf4f( const vec4 in_V, const float in_S ) {
+static inline vec4 mulf4f(const vec4 in_V, const float in_S) {
     vec4 v;
     v.v[0] = in_V.v[0] * in_S;
     v.v[1] = in_V.v[1] * in_S;
@@ -670,7 +734,7 @@ static inline vec4 mulf4f( const vec4 in_V, const float in_S ) {
     return v;
 }
 
-static inline mat2 mulm2f( const mat2 in_M, const float in_S ) {
+static inline mat2 mulm2f(const mat2 in_M, const float in_S) {
     mat2 m;
     m.m[0] = in_M.m[0] * in_S;
     m.m[1] = in_M.m[1] * in_S;
@@ -679,7 +743,7 @@ static inline mat2 mulm2f( const mat2 in_M, const float in_S ) {
     return m;
 }
 
-static inline mat3 mulm3f( const mat3 in_M, const float in_S ) {
+static inline mat3 mulm3f(const mat3 in_M, const float in_S) {
     mat3 m;
     m.m[0] = in_M.m[0] * in_S;
     m.m[1] = in_M.m[1] * in_S;
@@ -693,7 +757,7 @@ static inline mat3 mulm3f( const mat3 in_M, const float in_S ) {
     return m;
 }
 
-static inline mat4 mulm4f( const mat4 in_M, const float in_S ) {
+static inline mat4 mulm4f(const mat4 in_M, const float in_S) {
     mat4 m;
     m.m[0]  = in_M.m[0]  * in_S;
     m.m[1]  = in_M.m[1]  * in_S;
@@ -714,58 +778,58 @@ static inline mat4 mulm4f( const mat4 in_M, const float in_S ) {
     return m;
 }
 
-static inline float vec2Length( const vec2 in_V ) {
+static inline float vec2Length(const vec2 in_V) {
     float sqr = in_V.v[0] * in_V.v[0] + in_V.v[1] * in_V.v[1];
-    return sqrtf( sqr );
+    return sqrtf(sqr);
 }
 
-static inline float vec3Length( const vec3 in_V ) {
+static inline float vec3Length(const vec3 in_V) {
     float sqr = in_V.v[0] * in_V.v[0] + in_V.v[1] * in_V.v[1] + in_V.v[2] * in_V.v[2];
-    return sqrtf( sqr );
+    return sqrtf(sqr);
 }
 
-static inline float vec4Length( const vec4 in_V ) {
+static inline float vec4Length(const vec4 in_V) {
     float sqr = in_V.v[0] * in_V.v[0] + in_V.v[1] * in_V.v[1] + in_V.v[2] * in_V.v[2] + in_V.v[3] * in_V.v[3];
-    return sqrtf( sqr );
+    return sqrtf(sqr);
 }
 
-static inline float vec2Distance( const vec2 in_A, const vec2 in_B ) {
+static inline float vec2Distance(const vec2 in_A, const vec2 in_B) {
     vec2 v;
     v.v[0] = in_A.v[0] - in_B.v[0];
     v.v[1] = in_A.v[1] - in_B.v[1];
-    return vec2Length( v );
+    return vec2Length(v);
 }
 
-static inline float vec3Distance( const vec3 in_A, const vec3 in_B ) {
+static inline float vec3Distance(const vec3 in_A, const vec3 in_B) {
     vec3 v;
     v.v[0] = in_A.v[0] - in_B.v[0];
     v.v[1] = in_A.v[1] - in_B.v[1];
     v.v[2] = in_A.v[2] - in_B.v[2];
-    return vec3Length( v );
+    return vec3Length(v);
 }
 
-static inline float vec4Distance( const vec4 in_A, const vec4 in_B ) {
+static inline float vec4Distance(const vec4 in_A, const vec4 in_B) {
     vec4 v;
     v.v[0] = in_A.v[0] - in_B.v[0];
     v.v[1] = in_A.v[1] - in_B.v[1];
     v.v[2] = in_A.v[2] - in_B.v[2];
     v.v[3] = in_A.v[3] - in_B.v[3];
-    return vec4Length( v );
+    return vec4Length(v);
 }
 
-static inline float vec2Dot( const vec2 in_A, const vec2 in_B ) {
+static inline float vec2Dot(const vec2 in_A, const vec2 in_B) {
     return in_A.v[0] * in_B.v[0] + in_A.v[1] * in_B.v[1];
 }
 
-static inline float vec3Dot( const vec3 in_A, const vec3 in_B ) {
+static inline float vec3Dot(const vec3 in_A, const vec3 in_B) {
     return in_A.v[0] * in_B.v[0] + in_A.v[1] * in_B.v[1] + in_A.v[2] * in_B.v[2];
 }
 
-static inline float vec4Dot( const vec4 in_A, const vec4 in_B ) {
+static inline float vec4Dot(const vec4 in_A, const vec4 in_B) {
     return in_A.v[0] * in_B.v[0] + in_A.v[1] * in_B.v[1] + in_A.v[2] * in_B.v[2] + in_A.v[3] * in_B.v[3];
 }
 
-static inline vec3 vec3Cross( const vec3 in_A, const vec3 in_B ) {
+static inline vec3 vec3Cross(const vec3 in_A, const vec3 in_B) {
     vec3 v;
     v.v[0] = in_A.v[1] * in_B.v[2] - in_A.v[2] * in_B.v[1];
     v.v[1] = in_A.v[2] * in_B.v[0] - in_A.v[0] * in_B.v[2];
@@ -773,36 +837,36 @@ static inline vec3 vec3Cross( const vec3 in_A, const vec3 in_B ) {
     return v;
 }
 
-static inline float normalizef( const float in_S ) {
+static inline float normalizef(const float in_S) {
     float result = 0;
-    result = ( in_S < 0 ) ? -1 : result;
-    result = ( in_S > 0 ) ?  1 : result;
+    result = (in_S < 0) ? -1 : result;
+    result = (in_S > 0) ?  1 : result;
     return result;
 }
 
-static inline vec2 normalizef2( const vec2 in_V ) {
+static inline vec2 normalizef2(const vec2 in_V) {
     vec2 v;
     float sqr = in_V.v[0] * in_V.v[0] + in_V.v[1] * in_V.v[1];
-    float invSQRT = inverseSQRT( sqr );
+    float invSQRT = inverseSQRT(sqr);
     v.v[0] = in_V.v[0] * invSQRT;
     v.v[1] = in_V.v[1] * invSQRT;
     return v;
 }
 
-static inline vec3 normalizef3( const vec3 in_V ) {
+static inline vec3 normalizef3(const vec3 in_V) {
     vec3 v;
     const float sqr = in_V.v[0] * in_V.v[0] + in_V.v[1] * in_V.v[1] + in_V.v[2] * in_V.v[2];
-    const float invSQRT = inverseSQRT( sqr );
+    const float invSQRT = inverseSQRT(sqr);
     v.v[0] = in_V.v[0] * invSQRT;
     v.v[1] = in_V.v[1] * invSQRT;
     v.v[2] = in_V.v[2] * invSQRT;
     return v;
 }
 
-static inline vec4 normalizef4( const vec4 in_V ) {
+static inline vec4 normalizef4(const vec4 in_V) {
     vec4 v;
     const float sqr = in_V.v[0] * in_V.v[0] + in_V.v[1] * in_V.v[1] + in_V.v[2] * in_V.v[2] + in_V.v[3] * in_V.v[3];
-    const float invSQRT = inverseSQRT( sqr );
+    const float invSQRT = inverseSQRT(sqr);
     v.v[0] = in_V.v[0] * invSQRT;
     v.v[1] = in_V.v[1] * invSQRT;
     v.v[2] = in_V.v[2] * invSQRT;
@@ -812,161 +876,287 @@ static inline vec4 normalizef4( const vec4 in_V ) {
 
 
 
-static inline mat4 mat4MakeOrtho( const float in_L, const float in_R, const float in_B, const float in_T, const float in_N, const float in_F ) {
+static inline mat4 mat4MakeOrtho(const float in_L, const float in_R, const float in_B, const float in_T, const float in_N, const float in_F) {
     mat4 m;
-    const float rl = 1.0f / ( in_R - in_L );
-    const float tb = 1.0f / ( in_T - in_B );
-    const float fn = 1.0f / ( in_N - in_F );
-    m.m[0] = 2 * rl;    m.m[4] = 0;         m.m[8]  = 0;        m.m[12] = -( in_L + in_R ) * rl;
-    m.m[1] = 0;         m.m[5] = 2 * tb;    m.m[9]  = 0;        m.m[13] = -( in_B + in_T ) * tb;
-    m.m[2] = 0;         m.m[6] = 0;         m.m[10] = 2 * fn;   m.m[14] = ( in_N + in_F ) * fn;
-    m.m[3] = 0;         m.m[7] = 0;         m.m[11] = 0;        m.m[15] = 1;
+    const float rl = 1.0f / (in_R - in_L);
+    const float tb = 1.0f / (in_T - in_B);
+    const float fn = 1.0f / (in_N - in_F);
+    m.m[0] = 2 * rl;
+    m.m[4] = 0;
+    m.m[8]  = 0;
+    m.m[12] = -(in_L + in_R) * rl;
+    m.m[1] = 0;
+    m.m[5] = 2 * tb;
+    m.m[9]  = 0;
+    m.m[13] = -(in_B + in_T) * tb;
+    m.m[2] = 0;
+    m.m[6] = 0;
+    m.m[10] = 2 * fn;
+    m.m[14] = (in_N + in_F) * fn;
+    m.m[3] = 0;
+    m.m[7] = 0;
+    m.m[11] = 0;
+    m.m[15] = 1;
     return m;
 }
 
 
-static inline mat4 mat4MakeFrustum( const float in_L, const float in_R, const float in_B, const float in_T, const float in_N, const float in_F ) {
+static inline mat4 mat4MakeFrustum(const float in_L, const float in_R, const float in_B, const float in_T, const float in_N, const float in_F) {
     mat4 m;
-    const float rl = 1.0f / ( in_R - in_L );
-    const float tb = 1.0f / ( in_T - in_B );
-    const float fn = 1.0f / ( in_N - in_F );
+    const float rl = 1.0f / (in_R - in_L);
+    const float tb = 1.0f / (in_T - in_B);
+    const float fn = 1.0f / (in_N - in_F);
     const float n2 = 2 * in_N;
-    m.m[0] = n2 * rl;   m.m[4] = 0;         m.m[8]  = ( in_L + in_R ) * rl;   m.m[12] = 0;
-    m.m[1] = 0;         m.m[5] = n2 * tb;   m.m[9]  = ( in_B + in_T ) * tb;   m.m[13] = 0;
-    m.m[2] = 0;         m.m[6] = 0;         m.m[10] = ( in_N + in_F ) * fn;   m.m[14] = 2.0f * in_F * in_N * fn;
-    m.m[3] = 0;         m.m[7] = 0;         m.m[11] = -1;                     m.m[15] = 0;
+    m.m[0] = n2 * rl;
+    m.m[4] = 0;
+    m.m[8]  = (in_L + in_R) * rl;
+    m.m[12] = 0;
+    m.m[1] = 0;
+    m.m[5] = n2 * tb;
+    m.m[9]  = (in_B + in_T) * tb;
+    m.m[13] = 0;
+    m.m[2] = 0;
+    m.m[6] = 0;
+    m.m[10] = (in_N + in_F) * fn;
+    m.m[14] = 2.0f * in_F * in_N * fn;
+    m.m[3] = 0;
+    m.m[7] = 0;
+    m.m[11] = -1;
+    m.m[15] = 0;
     return m;
 }
 
 
-static inline mat4 mat4MakePerspective( const float in_FOV_RADIANS, const float in_AR, const float in_N, const float in_F ) {
+static inline mat4 mat4MakePerspective(const float in_FOV_RADIANS, const float in_AR, const float in_N, const float in_F) {
     mat4 m;
-    const float f = tanf( 2.0f / in_FOV_RADIANS );
-    const float fn = 1.0f / ( in_N - in_F );
-    m.m[0] = f / in_AR; m.m[4] = 0;     m.m[8]  = 0;                    m.m[12] = 0;
-    m.m[1] = 0;         m.m[5] = f;     m.m[9]  = 0;                    m.m[13] = 0;
-    m.m[2] = 0;         m.m[6] = 0;     m.m[10] = ( in_N + in_F ) * fn; m.m[14] = 2.0f * in_F * in_N * fn;
-    m.m[3] = 0;         m.m[7] = 0;     m.m[11] = -1;                   m.m[15] = 0;
+    const float f = tanf(2.0f / in_FOV_RADIANS);
+    const float fn = 1.0f / (in_N - in_F);
+    m.m[0] = f / in_AR;
+    m.m[4] = 0;
+    m.m[8]  = 0;
+    m.m[12] = 0;
+    m.m[1] = 0;
+    m.m[5] = f;
+    m.m[9]  = 0;
+    m.m[13] = 0;
+    m.m[2] = 0;
+    m.m[6] = 0;
+    m.m[10] = (in_N + in_F) * fn;
+    m.m[14] = 2.0f * in_F * in_N * fn;
+    m.m[3] = 0;
+    m.m[7] = 0;
+    m.m[11] = -1;
+    m.m[15] = 0;
     return m;
 }
 
 
-static inline mat4 mat4MakeRotate( const float in_RADIANS, const vec3 in_V ) {
-	mat4 m;
-	const float c = cosf( in_RADIANS );
-    const float s = sinf( in_RADIANS );
-	vec3 n = normalizef3( in_V );
-    m.m[0] = n.x * n.x * ( 1.0f - c ) + c;			m.m[4] = n.y * n.x * ( 1.0f - c ) - n.z * s;	m.m[8]  = n.z * n.x * ( 1.0f - c ) + n.y * s;	m.m[12] = 0;
-    m.m[1] = n.x * n.y * ( 1.0f - c ) + n.z * s;	m.m[5] = n.y * n.y * ( 1.0f - c ) + c;			m.m[9]  = n.z * n.y * ( 1.0f - c ) - n.x * s;	m.m[13] = 0;
-    m.m[2] = n.x * n.z * ( 1.0f - c ) - n.y * s;	m.m[6] = n.y * n.z * ( 1.0f - c ) + n.x * s;	m.m[10] = n.z * n.z * ( 1.0f - c ) + c;			m.m[14] = 0;
-    m.m[3] = 0;										m.m[7] = 0;										m.m[11] =  0;									m.m[15] = 1;
-	return m;
-}
-
-
-static inline mat4 mat4MakeRotateX( const float in_RADIANS ) {
+static inline mat4 mat4MakeRotate(const float in_RADIANS, const vec3 in_V) {
     mat4 m;
-    const float c = cosf( in_RADIANS );
-    const float s = sinf( in_RADIANS );
-    m.m[0] = 1;   m.m[4] = 0;   m.m[8]  =  0;   m.m[12] = 0;
-    m.m[1] = 0;   m.m[5] = c;   m.m[9]  = -s;   m.m[13] = 0;
-    m.m[2] = 0;   m.m[6] = s;   m.m[10] =  c;   m.m[14] = 0;
-    m.m[3] = 0;   m.m[7] = 0;   m.m[11] =  0;   m.m[15] = 1;
+    const float c = cosf(in_RADIANS);
+    const float s = sinf(in_RADIANS);
+    vec3 n = normalizef3(in_V);
+    m.m[0] = n.x * n.x * (1.0f - c) + c;
+    m.m[4] = n.y * n.x * (1.0f - c) - n.z * s;
+    m.m[8]  = n.z * n.x * (1.0f - c) + n.y * s;
+    m.m[12] = 0;
+    m.m[1] = n.x * n.y * (1.0f - c) + n.z * s;
+    m.m[5] = n.y * n.y * (1.0f - c) + c;
+    m.m[9]  = n.z * n.y * (1.0f - c) - n.x * s;
+    m.m[13] = 0;
+    m.m[2] = n.x * n.z * (1.0f - c) - n.y * s;
+    m.m[6] = n.y * n.z * (1.0f - c) + n.x * s;
+    m.m[10] = n.z * n.z * (1.0f - c) + c;
+    m.m[14] = 0;
+    m.m[3] = 0;
+    m.m[7] = 0;
+    m.m[11] =  0;
+    m.m[15] = 1;
     return m;
 }
 
 
-static inline mat4 mat4MakeRotateY( const float in_RADIANS ) {
+static inline mat4 mat4MakeRotateX(const float in_RADIANS) {
     mat4 m;
-    const float c = cosf( in_RADIANS );
-    const float s = sinf( in_RADIANS );
-    m.m[0] =  c;   m.m[4] = 0;   m.m[8]  = s;   m.m[12] = 0;
-    m.m[1] =  0;   m.m[5] = 1;   m.m[9]  = 0;   m.m[13] = 0;
-    m.m[2] = -s;   m.m[6] = 0;   m.m[10] = c;   m.m[14] = 0;
-    m.m[3] =  0;   m.m[7] = 0;   m.m[11] = 0;   m.m[15] = 1;
+    const float c = cosf(in_RADIANS);
+    const float s = sinf(in_RADIANS);
+    m.m[0] = 1;
+    m.m[4] = 0;
+    m.m[8]  =  0;
+    m.m[12] = 0;
+    m.m[1] = 0;
+    m.m[5] = c;
+    m.m[9]  = -s;
+    m.m[13] = 0;
+    m.m[2] = 0;
+    m.m[6] = s;
+    m.m[10] =  c;
+    m.m[14] = 0;
+    m.m[3] = 0;
+    m.m[7] = 0;
+    m.m[11] =  0;
+    m.m[15] = 1;
     return m;
 }
 
 
-static inline mat2 mat2MakeRotateZ( const float in_RADIANS ) {
+static inline mat4 mat4MakeRotateY(const float in_RADIANS) {
+    mat4 m;
+    const float c = cosf(in_RADIANS);
+    const float s = sinf(in_RADIANS);
+    m.m[0] =  c;
+    m.m[4] = 0;
+    m.m[8]  = s;
+    m.m[12] = 0;
+    m.m[1] =  0;
+    m.m[5] = 1;
+    m.m[9]  = 0;
+    m.m[13] = 0;
+    m.m[2] = -s;
+    m.m[6] = 0;
+    m.m[10] = c;
+    m.m[14] = 0;
+    m.m[3] =  0;
+    m.m[7] = 0;
+    m.m[11] = 0;
+    m.m[15] = 1;
+    return m;
+}
+
+
+static inline mat2 mat2MakeRotateZ(const float in_RADIANS) {
     mat2 m;
-    const float c = cosf( in_RADIANS );
-    const float s = sinf( in_RADIANS );
-    m.m[0] = c;   m.m[2] = -s;
-    m.m[1] = s;   m.m[3] =  c;
+    const float c = cosf(in_RADIANS);
+    const float s = sinf(in_RADIANS);
+    m.m[0] = c;
+    m.m[2] = -s;
+    m.m[1] = s;
+    m.m[3] =  c;
     return m;
 }
 
 
-static inline mat4 mat4MakeRotateZ( const float in_RADIANS ) {
+static inline mat4 mat4MakeRotateZ(const float in_RADIANS) {
     mat4 m;
-    const float c = cosf( in_RADIANS );
-    const float s = sinf( in_RADIANS );
-    m.m[0] = c;   m.m[4] = -s;   m.m[8]  = 0;   m.m[12] = 0;
-    m.m[1] = s;   m.m[5] =  c;   m.m[9]  = 0;   m.m[13] = 0;
-    m.m[2] = 0;   m.m[6] =  0;   m.m[10] = 1;   m.m[14] = 0;
-    m.m[3] = 0;   m.m[7] =  0;   m.m[11] = 0;   m.m[15] = 1;
+    const float c = cosf(in_RADIANS);
+    const float s = sinf(in_RADIANS);
+    m.m[0] = c;
+    m.m[4] = -s;
+    m.m[8]  = 0;
+    m.m[12] = 0;
+    m.m[1] = s;
+    m.m[5] =  c;
+    m.m[9]  = 0;
+    m.m[13] = 0;
+    m.m[2] = 0;
+    m.m[6] =  0;
+    m.m[10] = 1;
+    m.m[14] = 0;
+    m.m[3] = 0;
+    m.m[7] =  0;
+    m.m[11] = 0;
+    m.m[15] = 1;
     return m;
 }
 
 
-static inline mat4 mat4MakeTranslate( const vec3 in_V ) {
+static inline mat4 mat4MakeTranslate(const vec3 in_V) {
     mat4 m;
-    m.m[0] = 1;   m.m[4] = 0;   m.m[8]  = 0;   m.m[12] = in_V.v[0];
-    m.m[1] = 0;   m.m[5] = 1;   m.m[9]  = 0;   m.m[13] = in_V.v[1];
-    m.m[2] = 0;   m.m[6] = 0;   m.m[10] = 1;   m.m[14] = in_V.v[2];
-    m.m[3] = 0;   m.m[7] = 0;   m.m[11] = 0;   m.m[15] = 1;
+    m.m[0] = 1;
+    m.m[4] = 0;
+    m.m[8]  = 0;
+    m.m[12] = in_V.v[0];
+    m.m[1] = 0;
+    m.m[5] = 1;
+    m.m[9]  = 0;
+    m.m[13] = in_V.v[1];
+    m.m[2] = 0;
+    m.m[6] = 0;
+    m.m[10] = 1;
+    m.m[14] = in_V.v[2];
+    m.m[3] = 0;
+    m.m[7] = 0;
+    m.m[11] = 0;
+    m.m[15] = 1;
     return m;
 }
 
 
-static inline mat2 mat2FromMat3( const mat3 in_M ) {
+static inline mat2 mat2FromMat3(const mat3 in_M) {
     mat2 m;
-    m.m[0] = in_M.m[0]; m.m[2] = in_M.m[3];
-    m.m[1] = in_M.m[1]; m.m[3] = in_M.m[4];
+    m.m[0] = in_M.m[0];
+    m.m[2] = in_M.m[3];
+    m.m[1] = in_M.m[1];
+    m.m[3] = in_M.m[4];
     return m;
 }
 
 
-static inline mat3 mat3FromMat4( const mat4 in_M ) {
+static inline mat3 mat3FromMat4(const mat4 in_M) {
     mat3 m;
-    m.m[0] = in_M.m[0]; m.m[3] = in_M.m[4]; m.m[6] = in_M.m[8];
-    m.m[1] = in_M.m[1]; m.m[4] = in_M.m[5]; m.m[7] = in_M.m[9];
-    m.m[2] = in_M.m[2]; m.m[5] = in_M.m[6]; m.m[8] = in_M.m[10];
+    m.m[0] = in_M.m[0];
+    m.m[3] = in_M.m[4];
+    m.m[6] = in_M.m[8];
+    m.m[1] = in_M.m[1];
+    m.m[4] = in_M.m[5];
+    m.m[7] = in_M.m[9];
+    m.m[2] = in_M.m[2];
+    m.m[5] = in_M.m[6];
+    m.m[8] = in_M.m[10];
     return m;
 }
 
 
-static inline mat2 mat2Transpose( const mat2 in_M ) {
+static inline mat2 mat2Transpose(const mat2 in_M) {
     mat2 m;
-    m.m[0] = in_M.m[0]; m.m[2] = in_M.m[1];
-    m.m[1] = in_M.m[2]; m.m[3] = in_M.m[3];
+    m.m[0] = in_M.m[0];
+    m.m[2] = in_M.m[1];
+    m.m[1] = in_M.m[2];
+    m.m[3] = in_M.m[3];
     return m;
 }
 
 
-static inline mat3 mat3Transpose( const mat3 in_M ) {
+static inline mat3 mat3Transpose(const mat3 in_M) {
     mat3 m;
-    m.m[0] = in_M.m[0]; m.m[3] = in_M.m[1]; m.m[6] = in_M.m[2];
-    m.m[1] = in_M.m[3]; m.m[4] = in_M.m[4]; m.m[7] = in_M.m[5];
-    m.m[2] = in_M.m[6]; m.m[5] = in_M.m[7]; m.m[8] = in_M.m[8];
+    m.m[0] = in_M.m[0];
+    m.m[3] = in_M.m[1];
+    m.m[6] = in_M.m[2];
+    m.m[1] = in_M.m[3];
+    m.m[4] = in_M.m[4];
+    m.m[7] = in_M.m[5];
+    m.m[2] = in_M.m[6];
+    m.m[5] = in_M.m[7];
+    m.m[8] = in_M.m[8];
     return m;
 }
 
 
-static inline mat4 mat4Transpose( const mat4 in_M ) {
+static inline mat4 mat4Transpose(const mat4 in_M) {
     mat4 m;
-    m.m[0] = in_M.m[0];  m.m[4] = in_M.m[1];  m.m[8]  = in_M.m[2];  m.m[12] = in_M.m[3];
-    m.m[1] = in_M.m[4];  m.m[5] = in_M.m[5];  m.m[9]  = in_M.m[6];  m.m[13] = in_M.m[7];
-    m.m[2] = in_M.m[8];  m.m[6] = in_M.m[9];  m.m[10] = in_M.m[10]; m.m[14] = in_M.m[11];
-    m.m[3] = in_M.m[12]; m.m[7] = in_M.m[13]; m.m[11] = in_M.m[14]; m.m[15] = in_M.m[15];
+    m.m[0] = in_M.m[0];
+    m.m[4] = in_M.m[1];
+    m.m[8]  = in_M.m[2];
+    m.m[12] = in_M.m[3];
+    m.m[1] = in_M.m[4];
+    m.m[5] = in_M.m[5];
+    m.m[9]  = in_M.m[6];
+    m.m[13] = in_M.m[7];
+    m.m[2] = in_M.m[8];
+    m.m[6] = in_M.m[9];
+    m.m[10] = in_M.m[10];
+    m.m[14] = in_M.m[11];
+    m.m[3] = in_M.m[12];
+    m.m[7] = in_M.m[13];
+    m.m[11] = in_M.m[14];
+    m.m[15] = in_M.m[15];
     return m;
 }
 
 
-static inline mat2 mat2InverseTranspose( const mat2 in_M ) {
+static inline mat2 mat2InverseTranspose(const mat2 in_M) {
     mat2 m;
-    float invDet = 1.0f / ( in_M.m[0] * in_M.m[3] - in_M.m[1] * in_M.m[2] );
+    float invDet = 1.0f / (in_M.m[0] * in_M.m[3] - in_M.m[1] * in_M.m[2]);
     m.m[0] = invDet * in_M.m[3];
     m.m[1] = invDet * -in_M.m[2];
     m.m[2] = invDet * -in_M.m[1];
@@ -974,31 +1164,31 @@ static inline mat2 mat2InverseTranspose( const mat2 in_M ) {
     return m;
 }
 
-static inline mat3 mat3InverseTranspose( const mat3 in_M ) {
+static inline mat3 mat3InverseTranspose(const mat3 in_M) {
     mat3 m;
-    float invDet = 1.0f / ( in_M.m[0] * in_M.m[4] * in_M.m[8]
+    float invDet = 1.0f / (in_M.m[0] * in_M.m[4] * in_M.m[8]
                            + in_M.m[3] * in_M.m[7] * in_M.m[2]
                            + in_M.m[6] * in_M.m[1] * in_M.m[5]
                            - in_M.m[2] * in_M.m[4] * in_M.m[6]
                            - in_M.m[5] * in_M.m[7] * in_M.m[0]
-                           - in_M.m[8] * in_M.m[1] * in_M.m[3] );
-    m.m[0] = invDet * ( in_M.m[4] * in_M.m[8] - in_M.m[5] * in_M.m[7] );
-    m.m[1] = invDet * ( in_M.m[5] * in_M.m[6] - in_M.m[3] * in_M.m[8] );
-    m.m[2] = invDet * ( in_M.m[3] * in_M.m[7] - in_M.m[4] * in_M.m[6] );
-    m.m[3] = invDet * ( in_M.m[7] * in_M.m[2] - in_M.m[8] * in_M.m[1] );
-    m.m[4] = invDet * ( in_M.m[0] * in_M.m[8] - in_M.m[2] * in_M.m[6] );
-    m.m[5] = invDet * ( in_M.m[6] * in_M.m[1] - in_M.m[7] * in_M.m[0] );
-    m.m[6] = invDet * ( in_M.m[1] * in_M.m[5] - in_M.m[2] * in_M.m[4] );
-    m.m[7] = invDet * ( in_M.m[2] * in_M.m[3] - in_M.m[0] * in_M.m[5] );
-    m.m[8] = invDet * ( in_M.m[0] * in_M.m[4] - in_M.m[1] * in_M.m[3] );
+                           - in_M.m[8] * in_M.m[1] * in_M.m[3]);
+    m.m[0] = invDet * (in_M.m[4] * in_M.m[8] - in_M.m[5] * in_M.m[7]);
+    m.m[1] = invDet * (in_M.m[5] * in_M.m[6] - in_M.m[3] * in_M.m[8]);
+    m.m[2] = invDet * (in_M.m[3] * in_M.m[7] - in_M.m[4] * in_M.m[6]);
+    m.m[3] = invDet * (in_M.m[7] * in_M.m[2] - in_M.m[8] * in_M.m[1]);
+    m.m[4] = invDet * (in_M.m[0] * in_M.m[8] - in_M.m[2] * in_M.m[6]);
+    m.m[5] = invDet * (in_M.m[6] * in_M.m[1] - in_M.m[7] * in_M.m[0]);
+    m.m[6] = invDet * (in_M.m[1] * in_M.m[5] - in_M.m[2] * in_M.m[4]);
+    m.m[7] = invDet * (in_M.m[2] * in_M.m[3] - in_M.m[0] * in_M.m[5]);
+    m.m[8] = invDet * (in_M.m[0] * in_M.m[4] - in_M.m[1] * in_M.m[3]);
     return m;
 }
 
-static inline mat4 mat4InverseTranspose( const mat4 in_M );
+static inline mat4 mat4InverseTranspose(const mat4 in_M);
 
-static inline mat2 mat2Inverse( const mat2 in_M ) {
+static inline mat2 mat2Inverse(const mat2 in_M) {
     mat2 m;
-    float invDet = 1.0f / ( in_M.m[0] * in_M.m[3] - in_M.m[1] * in_M.m[2] );
+    float invDet = 1.0f / (in_M.m[0] * in_M.m[3] - in_M.m[1] * in_M.m[2]);
     m.m[0] = invDet * in_M.m[3];
     m.m[1] = invDet * -in_M.m[1];
     m.m[2] = invDet * -in_M.m[2];
@@ -1006,27 +1196,27 @@ static inline mat2 mat2Inverse( const mat2 in_M ) {
     return m;
 }
 
-static inline mat3 mat3Inverse( const mat3 in_M ) {
+static inline mat3 mat3Inverse(const mat3 in_M) {
     mat3 m;
-    float invDet = 1.0f / ( in_M.m[0] * in_M.m[4] * in_M.m[8]
+    float invDet = 1.0f / (in_M.m[0] * in_M.m[4] * in_M.m[8]
                            + in_M.m[3] * in_M.m[7] * in_M.m[2]
                            + in_M.m[6] * in_M.m[1] * in_M.m[5]
                            - in_M.m[2] * in_M.m[4] * in_M.m[6]
                            - in_M.m[5] * in_M.m[7] * in_M.m[0]
-                           - in_M.m[8] * in_M.m[1] * in_M.m[3] );
-    m.m[0] = invDet * ( in_M.m[4] * in_M.m[8] - in_M.m[5] * in_M.m[7] );
-    m.m[1] = invDet * ( in_M.m[7] * in_M.m[2] - in_M.m[8] * in_M.m[1] );
-    m.m[2] = invDet * ( in_M.m[1] * in_M.m[5] - in_M.m[2] * in_M.m[4] );
-    m.m[3] = invDet * ( in_M.m[5] * in_M.m[6] - in_M.m[3] * in_M.m[8] );
-    m.m[4] = invDet * ( in_M.m[0] * in_M.m[8] - in_M.m[2] * in_M.m[6] );
-    m.m[5] = invDet * ( in_M.m[2] * in_M.m[3] - in_M.m[0] * in_M.m[5] );
-    m.m[6] = invDet * ( in_M.m[3] * in_M.m[7] - in_M.m[4] * in_M.m[6] );
-    m.m[7] = invDet * ( in_M.m[6] * in_M.m[1] - in_M.m[7] * in_M.m[0] );
-    m.m[8] = invDet * ( in_M.m[0] * in_M.m[4] - in_M.m[1] * in_M.m[3] );
+                           - in_M.m[8] * in_M.m[1] * in_M.m[3]);
+    m.m[0] = invDet * (in_M.m[4] * in_M.m[8] - in_M.m[5] * in_M.m[7]);
+    m.m[1] = invDet * (in_M.m[7] * in_M.m[2] - in_M.m[8] * in_M.m[1]);
+    m.m[2] = invDet * (in_M.m[1] * in_M.m[5] - in_M.m[2] * in_M.m[4]);
+    m.m[3] = invDet * (in_M.m[5] * in_M.m[6] - in_M.m[3] * in_M.m[8]);
+    m.m[4] = invDet * (in_M.m[0] * in_M.m[8] - in_M.m[2] * in_M.m[6]);
+    m.m[5] = invDet * (in_M.m[2] * in_M.m[3] - in_M.m[0] * in_M.m[5]);
+    m.m[6] = invDet * (in_M.m[3] * in_M.m[7] - in_M.m[4] * in_M.m[6]);
+    m.m[7] = invDet * (in_M.m[6] * in_M.m[1] - in_M.m[7] * in_M.m[0]);
+    m.m[8] = invDet * (in_M.m[0] * in_M.m[4] - in_M.m[1] * in_M.m[3]);
     return m;
 }
 
-static inline mat4 mat4Inverse( const mat4 in_M );
+static inline mat4 mat4Inverse(const mat4 in_M);
 
 
 #endif

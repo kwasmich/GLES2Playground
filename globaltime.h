@@ -10,11 +10,11 @@
 #define __GlobalTime__globaltime__
 
 
-void timeReset( void );
-void timeTick( void );
-void timeSet( const float in_TIME );
-float timeGet( void );
-float timeDelta( void );
+void timeReset(void);
+void timeTick(void);
+void timeSet(const float in_TIME);
+float timeGet(void);
+float timeDelta(void);
 
 
 #endif /* defined(__GlobalTime__globaltime__) */

@@ -19,7 +19,7 @@ static float s_timeDelta = 0;
 
 
 void timeReset() {
-    gettimeofday( &s_relativeZero, NULL );
+    gettimeofday(&s_relativeZero, NULL);
     s_time = 0;
 }
 
@@ -27,8 +27,8 @@ void timeReset() {
 
 void timeTick() {
     struct timeval now, delta;
-    gettimeofday( &now, NULL );
-    timersub( &now, &s_relativeZero, &delta );
+    gettimeofday(&now, NULL);
+    timersub(&now, &s_relativeZero, &delta);
     float before = s_time;
     s_time = (float)(delta.tv_sec) + (float)(delta.tv_usec) * 0.000001f;
     s_timeDelta = s_time - before;
@@ -36,7 +36,7 @@ void timeTick() {
 
 
 
-void timeSet( const float in_TIME ) {
+void timeSet(const float in_TIME) {
     s_time = in_TIME;
     s_timeDelta = 0;
 }

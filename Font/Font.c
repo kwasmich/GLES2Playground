@@ -38,10 +38,10 @@
 static GLuint s_error;
 
 static uint16_t s_numFontPoints = 0;
-static ft3dVertex_t * s_fontPoints = NULL;
-static ft3dFontMap_t * s_fontMap = NULL;
+static ft3dVertex_t *s_fontPoints = NULL;
+static ft3dFontMap_t *s_fontMap = NULL;
 static int s_fontMapSize = 0;
-static char * s_string = NULL;
+static char *s_string = NULL;
 static uint32_t s_lifeTime = 0;
 static const float LIFE_TIME = 5.0f;
 
@@ -54,36 +54,36 @@ static GLuint s_screenHeight = 0;
 static GLfloat s_screenAspect = 1;
 
 
-static void loadShaders( void );
-static void unloadShaders( void );
-static void loadTextures( void );
-static void unloadTextures( void );
+static void loadShaders(void);
+static void unloadShaders(void);
+static void loadTextures(void);
+static void unloadTextures(void);
 
 
-static void init( const int in_WIDTH, const int in_HEIGHT ) {
+static void init(const int in_WIDTH, const int in_HEIGHT) {
     s_screenWidth = in_WIDTH;
     s_screenHeight = in_HEIGHT;
     s_screenAspect = in_WIDTH / (float)in_HEIGHT;
-    
-    mat4 projectionMatrix = mat4MakeOrtho( 0, in_WIDTH, 0, in_HEIGHT, 0, 1 );
-    
+
+    mat4 projectionMatrix = mat4MakeOrtho(0, in_WIDTH, 0, in_HEIGHT, 0, 1);
+
     loadShaders();
     loadTextures();
-    
+
     int rawSize = 0;
-    s_fontMap = (ft3dFontMap_t*)rawFromFileContents( "Font/Assets/Vera512.map", false, &rawSize );
-    s_fontMapSize = rawSize / sizeof( ft3dFontMap_t );
-    
-    glClearColor( 0.0f, 0.5f, 0.0f, 0.75f );
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glActiveTexture( GL_TEXTURE0 );
-    glBindTexture( GL_TEXTURE_2D, s_textureFont );
-    
-    glUseProgram( s_shaderFont.programObject );
-    glUniformMatrix4fv( s_shaderFont.uniformLocations[UNIFORM_PROJECTION_MATRIX], 1, 0, projectionMatrix.m );
-    glUniform1i( s_shaderFont.uniformLocations[UNIFORM_TEXTURE], 0 );
-    glUniform1f( s_shaderFont.uniformLocations[UNIFORM_TEXTURE_SIZE], 512 );
+    s_fontMap = (ft3dFontMap_t *)rawFromFileContents("Font/Assets/Vera512.map", false, &rawSize);
+    s_fontMapSize = rawSize / sizeof(ft3dFontMap_t);
+
+    glClearColor(0.0f, 0.5f, 0.0f, 0.75f);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, s_textureFont);
+
+    glUseProgram(s_shaderFont.programObject);
+    glUniformMatrix4fv(s_shaderFont.uniformLocations[UNIFORM_PROJECTION_MATRIX], 1, 0, projectionMatrix.m);
+    glUniform1i(s_shaderFont.uniformLocations[UNIFORM_TEXTURE], 0);
+    glUniform1f(s_shaderFont.uniformLocations[UNIFORM_TEXTURE_SIZE], 512);
     error();
 }
 
@@ -91,9 +91,9 @@ static void init( const int in_WIDTH, const int in_HEIGHT ) {
 
 static void update() {
     float time = timeGet();
-    
-    if ( s_numFontPoints and time > s_lifeTime ) {
-        free_s( s_fontPoints );
+
+    if (s_numFontPoints and time > s_lifeTime) {
+        free_s(s_fontPoints);
         s_numFontPoints = 0;
     }
 }
@@ -101,19 +101,19 @@ static void update() {
 
 
 static void draw() {
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    
-    if ( s_numFontPoints > 0 ) {
-        glUseProgram( s_shaderFont.programObject );
-        glEnableVertexAttribArray( s_shaderFont.attribLocations[ATTRIB_POSITION] );
-        glEnableVertexAttribArray( s_shaderFont.attribLocations[ATTRIB_TEX_COORD] );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (s_numFontPoints > 0) {
+        glUseProgram(s_shaderFont.programObject);
+        glEnableVertexAttribArray(s_shaderFont.attribLocations[ATTRIB_POSITION]);
+        glEnableVertexAttribArray(s_shaderFont.attribLocations[ATTRIB_TEX_COORD]);
         error();
-        
-        glBindTexture( GL_TEXTURE_2D, s_textureFont );
-        glVertexAttrib4f( s_shaderFont.attribLocations[ATTRIB_COLOR], 1, 1, 1, 1 );
-        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2( s_fontPoints, 0 ) );
-        glVertexAttribPointer( s_shaderFont.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2( s_fontPoints, 8 ) );
-        glDrawArrays( GL_TRIANGLE_STRIP, 0, s_numFontPoints );
+
+        glBindTexture(GL_TEXTURE_2D, s_textureFont);
+        glVertexAttrib4f(s_shaderFont.attribLocations[ATTRIB_COLOR], 1, 1, 1, 1);
+        glVertexAttribPointer(s_shaderFont.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2(s_fontPoints, 0));
+        glVertexAttribPointer(s_shaderFont.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2(s_fontPoints, 8));
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, s_numFontPoints);
         error();
     }
 }
@@ -123,8 +123,8 @@ static void draw() {
 static void deinit() {
     unloadTextures();
     unloadShaders();
-    free_s( s_fontMap );
-    free_s( s_fontPoints );
+    free_s(s_fontMap);
+    free_s(s_fontPoints);
     error();
 }
 
@@ -135,24 +135,24 @@ static void deinit() {
 
 
 static void loadShaders() {
-    GLuint vertShaderObject = createShaderObject( "Font/Assets/Shaders/Font.vsh", GL_VERTEX_SHADER );
+    GLuint vertShaderObject = createShaderObject("Font/Assets/Shaders/Font.vsh", GL_VERTEX_SHADER);
     error();
-    GLuint fragShaderObject = createShaderObject( "Font/Assets/Shaders/Font.fsh", GL_FRAGMENT_SHADER );
+    GLuint fragShaderObject = createShaderObject("Font/Assets/Shaders/Font.fsh", GL_FRAGMENT_SHADER);
     error();
-    
+
     glReleaseShaderCompiler();
-    
-    s_shaderFont = createProgramObject( vertShaderObject, fragShaderObject );
-    
-    glDeleteShader( vertShaderObject );
-    glDeleteShader( fragShaderObject );
+
+    s_shaderFont = createProgramObject(vertShaderObject, fragShaderObject);
+
+    glDeleteShader(vertShaderObject);
+    glDeleteShader(fragShaderObject);
 }
 
 
 
 static void unloadShaders() {
-    fputs( "unloadShaders\n", stderr );
-    glDeleteProgram( s_shaderFont.programObject );
+    fputs("unloadShaders\n", stderr);
+    glDeleteProgram(s_shaderFont.programObject);
     s_shaderFont.programObject = 0;
     error();
 }
@@ -164,7 +164,7 @@ static void unloadShaders() {
 
 
 static void loadTextures() {
-    s_textureFont = createTextureObject( "Font/Assets/Textures/Vera512.raw", GL_LUMINANCE );
+    s_textureFont = createTextureObject("Font/Assets/Textures/Vera512.raw", GL_LUMINANCE);
     //s_textureFont = createTextureObject( "Font/Assets/Textures/checkboard256.raw", GL_LUMINANCE );
     //s_textureFont = createTextureObject( "Arabesque/Assets/Textures/CircleMip.etc1", GL_ETC1_RGB8_OES );
 }
@@ -172,8 +172,8 @@ static void loadTextures() {
 
 
 static void unloadTextures() {
-    fputs( "unloadTextures\n", stderr );
-    glDeleteTextures( 1, &s_textureFont );
+    fputs("unloadTextures\n", stderr);
+    glDeleteTextures(1, &s_textureFont);
     s_textureFont = 0;
     error();
 }
@@ -184,17 +184,21 @@ static void unloadTextures() {
 
 
 
-static void setString( const char * in_STRING ) {
-    if ( !s_fontMap ) return;
-    
-    free_s( s_string );
-    const size_t size = strlen( in_STRING ) + 1;
-    s_string = malloc( size * sizeof( char ) );
-    strncpy( s_string, in_STRING, size );
-    
-    free_s( s_fontPoints );
+static void setString(const char *in_STRING) {
+    if (!s_fontMap) {
+        return;
+    }
+
+    free_s(s_string);
+    const size_t size = strlen(in_STRING) + 1;
+    s_string = malloc(size * sizeof(char));
+    strncpy(s_string, in_STRING, size);
+
+    free_s(s_fontPoints);
     float width = 0;
-    ft3dStringToVertexArray( &s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 128, 48, 1.0f, (RGBA_t){ 255, 255, 255, 255 }, false );
+    ft3dStringToVertexArray(&s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 128, 48, 1.0f, (RGBA_t) {
+        255, 255, 255, 255
+    }, false);
     s_lifeTime = timeGet() + LIFE_TIME;
 }
 

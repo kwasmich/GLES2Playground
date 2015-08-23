@@ -26,18 +26,18 @@
 # define UNUSED(x) x
 #endif
 
-static inline int clampi( const int in_VALUE, const int in_MIN, const int in_MAX ) {
-	int result = ( in_VALUE < in_MIN ) ? in_MIN : in_VALUE;
-    return ( result > in_MAX ) ? in_MAX : result;
+static inline int clampi(const int in_VALUE, const int in_MIN, const int in_MAX) {
+    int result = (in_VALUE < in_MIN) ? in_MIN : in_VALUE;
+    return (result > in_MAX) ? in_MAX : result;
 }
 
 
-char * expandTilde( const char in_PATH[] );
+char *expandTilde(const char in_PATH[]);
 
 
-uint64_t switchEndianness64( uint64_t const in_DATA );
-uint32_t switchEndianness32( uint32_t const in_DATA );
-uint16_t switchEndianness16( uint16_t const in_DATA );
+uint64_t switchEndianness64(uint64_t const in_DATA);
+uint32_t switchEndianness32(uint32_t const in_DATA);
+uint16_t switchEndianness16(uint16_t const in_DATA);
 
 
 #endif

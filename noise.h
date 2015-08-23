@@ -13,6 +13,6 @@ float noise1(float arg);
 float noise2(float vec[2]);
 float noise3(float vec[3]);
 
-float noise( float x, float y, float z );
+float noise(float x, float y, float z);
 
 #endif

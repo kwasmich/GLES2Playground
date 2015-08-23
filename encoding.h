@@ -15,8 +15,8 @@
 #include <wchar.h>
 
 
-void utf8ToWChar( wchar_t **out_wCharString, char const * const in_UTF8_STRING );
-void wCharToUTF8( char **out_utf8String, wchar_t const * const in_WCHAR_STRING );
+void utf8ToWChar(wchar_t **out_wCharString, char const *const in_UTF8_STRING);
+void wCharToUTF8(char **out_utf8String, wchar_t const *const in_WCHAR_STRING);
 
 
 #endif
