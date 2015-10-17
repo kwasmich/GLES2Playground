@@ -36,7 +36,8 @@ void ft3dStringToVertexArray(ft3dVertex_t **out_vertices, uint16_t *out_numVerte
     int cnt = 0;
     float penX = in_X;
     float penY = in_Y;
-
+    size_t c, i;
+    
     for (size_t c = 0; c < numChars; c++) {
         size_t idx = wStr[c];
         ft3dFontMap_t key = { .charCode = idx };

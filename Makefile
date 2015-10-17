@@ -19,7 +19,7 @@ all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 #	$^ == $(OBJECTS) (the list of prerequisites)
-#	$(CC) $^ $(LDLIBS) -o $@
+	$(CC) $^ $(LDLIBS) -o $@
 
 #%.o: %.c
 #.c.o:
