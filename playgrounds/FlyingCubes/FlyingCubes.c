@@ -6,10 +6,10 @@
 //
 //
 
-#include "../playground.h"
+#include "playgrounds/playground.h"
 
-#include "../Math3D.h"
-#include "../OpenGLES2Core.h"
+#include "Math3D.h"
+#include "OpenGLES2Core.h"
 
 #include <assert.h>
 #include <math.h>
@@ -158,8 +158,8 @@ static void tearDownGL() {
 
 
 void loadShaders() {
-    GLuint vertShaderObject = createShaderObject("FlyingCubes/Assets/Shaders/FlyingCubes.vsh", GL_VERTEX_SHADER);
-    GLuint fragShaderObject = createShaderObject("FlyingCubes/Assets/Shaders/FlyingCubes.fsh", GL_FRAGMENT_SHADER);
+    GLuint vertShaderObject = createShaderObject("playgrounds/FlyingCubes/Assets/Shaders/FlyingCubes.vsh", GL_VERTEX_SHADER);
+    GLuint fragShaderObject = createShaderObject("playgrounds/FlyingCubes/Assets/Shaders/FlyingCubes.fsh", GL_FRAGMENT_SHADER);
 
     glReleaseShaderCompiler();
 

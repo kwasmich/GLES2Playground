@@ -14,6 +14,7 @@
 #include <stdlib.h>
 
 
+#define UNREFERENCED_PARAMETER(x) (x)
 #define REINTERPRET(x) *(x *)&
 #define free_s(x) free(x);x = NULL
 

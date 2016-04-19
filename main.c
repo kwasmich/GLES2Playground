@@ -1,7 +1,8 @@
 #include "eglcore.h"
 #include "globaltime.h"
 #include "lib.h"
-#include "playground.h"
+#include "playgrounds/playground.h"
+#include "input/mouse.h"
 
 #include <bcm_host.h>
 #include <pthread.h>
@@ -12,6 +13,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+
 
 
 static const uint16_t s_DISPLAY_NUMBER = 0; // LCD = 0
@@ -37,56 +40,19 @@ static void terminated(const int in_SIG) {
 
 
 
-//static int get_mouse(CUBE_STATE_T *state, int *outx, int *outy)
-//{
-//    static int fd = -1;
-//    const int width=state->screen_width, height=state->screen_height;
-//    static int x=800, y=400;
-//    const int XSIGN = 1<<4, YSIGN = 1<<5;
-//    if (fd<0) {
-//        fd = open("/dev/input/mouse0",O_RDONLY|O_NONBLOCK);
-//    }
-//    if (fd>=0) {
-//        struct {char buttons, dx, dy; } m;
-//        while (1) {
-//            int bytes = read(fd, &m, sizeof m);
-//            if (bytes < (int)sizeof m) goto _exit;
-//            if (m.buttons&8) {
-//                break; // This bit should always be set
-//            }
-//            read(fd, &m, 1); // Try to sync up again
-//        }
-//        if (m.buttons&3)
-//            return m.buttons&3;
-//        x+=m.dx;
-//        y+=m.dy;
-//        if (m.buttons&XSIGN)
-//            x-=256;
-//        if (m.buttons&YSIGN)
-//            y-=256;
-//        if (x<0) x=0;
-//        if (y<0) y=0;
-//        if (x>width) x=width;
-//        if (y>height) y=height;
-//    }
-//_exit:
-//    if (outx) *outx = x;
-//    if (outy) *outy = y;
-//    return 0;
-//}
-
-
-
-
 static void *glThread(void *UNUSED(argument)) {
     float s_timeStamp = 0;
     uint32_t frameCounter = 0;
 
-    //initEGL( s_DISPLAY_NUMBER, s_screenWidth / 4, 32, s_screenWidth * 3 / 4, s_screenHeight * 3 / 4 );
-    initEGL(s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight);
-
+    mouseInit();
+    initEGL( s_DISPLAY_NUMBER, s_screenWidth / 4, 32, s_screenWidth * 3 / 4, s_screenHeight * 3 / 4 );
+    //initEGL(s_DISPLAY_NUMBER, 0, 0, s_screenWidth, s_screenHeight);
+    
     while (s_renderingThreadAlive) {
+        mouseUpdate();
         drawEGL();
+        mouseReset();
+        
         frameCounter++;
 
         if (frameCounter == s_screenFrameRate * 2) {
@@ -101,6 +67,7 @@ static void *glThread(void *UNUSED(argument)) {
     }
 
     destroyEGL();
+    mouseFree();
     pthread_exit(NULL);
 }
 
@@ -130,9 +97,10 @@ int main(int UNUSED(argc), char *UNUSED(argv[])) {
     extern GLES2Playground_t e_playgroundClock;
     extern GLES2Playground_t e_playgroundFlyingCubes;
     extern GLES2Playground_t e_playgroundFont;
+    extern GLES2Playground_t e_playgroundMouseKeyboard;
     extern GLES2Playground_t e_play;
 
-    e_play = e_playgroundArabesque;
+    e_play = e_playgroundMouseKeyboard;
 
     int rc = pthread_create(&s_renderingThread, NULL, glThread, NULL);
     assert(0 == rc);

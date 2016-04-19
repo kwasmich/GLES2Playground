@@ -6,13 +6,15 @@
 //
 //
 
-#include "../playground.h"
 
-#include "../colorspace.h"
-#include "../globaltime.h"
-#include "../Math3D.h"
-#include "../noise.h"
-#include "../OpenGLES2Core.h"
+#include "playgrounds/playground.h"
+
+#include "colorspace.h"
+#include "FreeType3D.h"
+#include "globaltime.h"
+#include "Math3D.h"
+#include "noise.h"
+#include "OpenGLES2Core.h"
 
 #include <assert.h>
 #include <iso646.h>
@@ -20,6 +22,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <execinfo.h>
 
@@ -73,9 +76,21 @@ static VertexData_t s_quad2[4] = {
     {  1,  1, 255, 255, 255, 255, 1, 1, 0, 0 },
 };
 
+
+static uint16_t s_numFontPoints = 0;
+static ft3dVertex_t *s_fontPoints = NULL;
+static ft3dFontMap_t *s_fontMap = NULL;
+static int s_fontMapSize = 0;
+static char *s_string = NULL;
+static uint32_t s_lifeTime = 0;
+static const float LIFE_TIME = 15.0f;
+
+
 // OpenGL|ES state
-static Shader_t s_activeShader;
-static GLuint s_texture;
+static Shader_t s_shaderArabesque;
+static Shader_t s_shaderFont;
+static GLuint s_textureCircle;
+static GLuint s_textureFont;
 //static GLuint s_framebuffer;
 //static GLuint s_framebufferTexture;
 static FrameBufferObject_t s_fboFront;
@@ -103,6 +118,8 @@ static void init(const int in_WIDTH, const int in_HEIGHT) {
     s_screenWidth = in_WIDTH;
     s_screenHeight = in_HEIGHT;
     s_screenAspect = in_WIDTH / (float)in_HEIGHT;
+
+    printf("%d x %d\n", in_WIDTH, in_HEIGHT);
 
     if (s_screenAspect > 1) {
         s_rows = 10 - 1;
@@ -155,22 +172,35 @@ static void init(const int in_WIDTH, const int in_HEIGHT) {
         s_points2[xy] = s_points[xy];
     }
 
-    mat4 projectionMatrix = mat4MakeOrtho(-s_screenAspect, s_screenAspect, -1, 1, 0, 1);
+    mat4 projectionMatrixArabesque = mat4MakeOrtho(-s_screenAspect, s_screenAspect, -1, 1, 0, 1);
+    mat4 projectionMatrixFont = mat4MakeOrtho(0, in_WIDTH, 0, in_HEIGHT, 0, 1);
 
     loadShaders();
     loadTextures();
     s_fboFront = createFrameBufferObject(in_WIDTH / 3, in_HEIGHT / 3);
     s_fboBack = createFrameBufferObject(in_WIDTH / 3, in_HEIGHT / 3);
+    int rawSize = 0;
+    s_fontMap = (ft3dFontMap_t *)rawFromFileContents("playgrounds/AudioVisualizer/Assets/Vera512.map", false, &rawSize);
+    s_fontMapSize = rawSize / sizeof(ft3dFontMap_t);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, s_texture);
 
-    glUseProgram(s_activeShader.programObject);
-    glUniformMatrix4fv(s_activeShader.uniformLocations[UNIFORM_PROJECTION_MATRIX], 1, 0, projectionMatrix.m);
-    glUniform1i(s_activeShader.uniformLocations[UNIFORM_TEXTURE], 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, s_textureFont);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, s_textureCircle);
+
+    glUseProgram(s_shaderArabesque.programObject);
+    glUniformMatrix4fv(s_shaderArabesque.uniformLocations[UNIFORM_PROJECTION_MATRIX], 1, 0, projectionMatrixArabesque.m);
+    glUniform1i(s_shaderArabesque.uniformLocations[UNIFORM_TEXTURE], 0);
+    error();
+
+    glUseProgram(s_shaderFont.programObject);
+    glUniformMatrix4fv(s_shaderFont.uniformLocations[UNIFORM_PROJECTION_MATRIX], 1, 0, projectionMatrixFont.m);
+    glUniform1i(s_shaderFont.uniformLocations[UNIFORM_TEXTURE], 1);
+    glUniform1f(s_shaderFont.uniformLocations[UNIFORM_TEXTURE_SIZE], 512);
     error();
 
     s_initialized = true;
@@ -310,15 +340,21 @@ static void update() {
 
         s_quad2[i].a = blend * 255;
     }
+
+
+    if (s_numFontPoints and time > s_lifeTime) {
+        free_s(s_fontPoints);
+        s_numFontPoints = 0;
+    }
 }
 
 
 
 static void draw() {
-    glUseProgram(s_activeShader.programObject);
-    glEnableVertexAttribArray(s_activeShader.attribLocations[ATTRIB_POSITION]);
-    glEnableVertexAttribArray(s_activeShader.attribLocations[ATTRIB_COLOR]);
-    glEnableVertexAttribArray(s_activeShader.attribLocations[ATTRIB_TEX_COORD]);
+    glUseProgram(s_shaderArabesque.programObject);
+    glEnableVertexAttribArray(s_shaderArabesque.attribLocations[ATTRIB_POSITION]);
+    glEnableVertexAttribArray(s_shaderArabesque.attribLocations[ATTRIB_COLOR]);
+    glEnableVertexAttribArray(s_shaderArabesque.attribLocations[ATTRIB_TEX_COORD]);
     error();
 
     if (s_idle) {
@@ -326,17 +362,17 @@ static void draw() {
 
         {
             glBindTexture(GL_TEXTURE_2D, s_fboFront.colorTexture0);
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad, 0));
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad, 8));
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad, 12));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad, 0));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad, 8));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad, 12));
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         }
 
         {
-            glBindTexture(GL_TEXTURE_2D, s_texture);
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 0));
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 8));
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 12));
+            glBindTexture(GL_TEXTURE_2D, s_textureCircle);
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 0));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 8));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 12));
             glDrawArrays(GL_TRIANGLE_STRIP, 0, s_numPoints * 6);
         }
 
@@ -346,17 +382,17 @@ static void draw() {
 
         {
             glBindTexture(GL_TEXTURE_2D, s_fboFront.colorTexture0);
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad2, 0));
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad2, 8));
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad2, 12));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad2, 0));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad2, 8));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_quad2, 12));
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         }
 
         {
-            glBindTexture(GL_TEXTURE_2D, s_texture);
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 0));
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 8));
-            glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 12));
+            glBindTexture(GL_TEXTURE_2D, s_textureCircle);
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 0));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 8));
+            glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 12));
             glDrawArrays(GL_TRIANGLE_STRIP, 0, s_numPoints * 6);
         }
 
@@ -369,14 +405,36 @@ static void draw() {
     } else {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, s_texture);
-        glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 0));
-        glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 8));
-        glVertexAttribPointer(s_activeShader.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 12));
+        glBindTexture(GL_TEXTURE_2D, s_textureCircle);
+        glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 0));
+        glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_COLOR], 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 8));
+        glVertexAttribPointer(s_shaderArabesque.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(VertexData_t), BUFFER_OFFSET2(s_points, 12));
         glDrawArrays(GL_TRIANGLE_STRIP, 0, s_numPoints * 6);
     }
 
-    //glBlitFramebufferANGLE(<#GLint srcX0#>, <#GLint srcY0#>, <#GLint srcX1#>, <#GLint srcY1#>, <#GLint dstX0#>, <#GLint dstY0#>, <#GLint dstX1#>, <#GLint dstY1#>, <#GLbitfield mask#>, <#GLenum filter#>)
+    glDisableVertexAttribArray(s_shaderArabesque.attribLocations[ATTRIB_POSITION]);
+    glDisableVertexAttribArray(s_shaderArabesque.attribLocations[ATTRIB_COLOR]);
+    glDisableVertexAttribArray(s_shaderArabesque.attribLocations[ATTRIB_TEX_COORD]);
+
+    if (s_numFontPoints > 0) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, s_screenWidth, s_screenHeight);
+
+        glUseProgram(s_shaderFont.programObject);
+        glEnableVertexAttribArray(s_shaderFont.attribLocations[ATTRIB_POSITION]);
+        glEnableVertexAttribArray(s_shaderFont.attribLocations[ATTRIB_TEX_COORD]);
+        error();
+
+        glBindTexture(GL_TEXTURE_2D, s_textureFont);
+        glVertexAttrib4f(s_shaderFont.attribLocations[ATTRIB_COLOR], 1, 1, 1, 1);
+        glVertexAttribPointer(s_shaderFont.attribLocations[ATTRIB_POSITION], 2, GL_FLOAT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2(s_fontPoints, 0));
+        glVertexAttribPointer(s_shaderFont.attribLocations[ATTRIB_TEX_COORD], 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(ft3dVertex_t), BUFFER_OFFSET2(s_fontPoints, 8));
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, s_numFontPoints);
+        error();
+
+        glDisableVertexAttribArray(s_shaderFont.attribLocations[ATTRIB_POSITION]);
+        glDisableVertexAttribArray(s_shaderFont.attribLocations[ATTRIB_TEX_COORD]);
+    }
 
     error();
 }
@@ -392,6 +450,8 @@ static void deinit() {
     unloadShaders();
     free_s(s_data);
     free_s(s_points);
+    free_s(s_fontMap);
+    free_s(s_fontPoints);
     error();
 }
 
@@ -458,19 +518,53 @@ static void setIdle(const bool in_IDLE) {
 }
 
 
+
+static void setString(const char *in_STRING) {
+    if (!s_fontMap) {
+        return;
+    }
+
+    free_s(s_string);
+    const size_t size = strlen(in_STRING) + 1;
+    s_string = malloc(size * sizeof(char));
+    strncpy(s_string, in_STRING, size);
+
+    free_s(s_fontPoints);
+    float width = 0;
+    ft3dStringToVertexArray(&s_fontPoints, &s_numFontPoints, &width, s_fontMap, s_fontMapSize, s_string, 32, 128, 48, 1.0f, (RGBA_t) {
+        255, 255, 255, 255
+    }, false);
+    s_lifeTime = timeGet() + LIFE_TIME;
+}
+
+
+
 #pragma mark - Shaders
 
 
 
 static void loadShaders() {
-    GLuint vertShaderObject = createShaderObject("Arabesque/Assets/Shaders/Arabesque.vsh", GL_VERTEX_SHADER);
+    GLuint vertShaderObject = createShaderObject("playgrounds/AudioVisualizer/Assets/Shaders/Arabesque.vsh", GL_VERTEX_SHADER);
     error();
-    GLuint fragShaderObject = createShaderObject("Arabesque/Assets/Shaders/Arabesque.fsh", GL_FRAGMENT_SHADER);
+    GLuint fragShaderObject = createShaderObject("playgrounds/AudioVisualizer/Assets/Shaders/Arabesque.fsh", GL_FRAGMENT_SHADER);
     error();
 
     glReleaseShaderCompiler();
 
-    s_activeShader = createProgramObject(vertShaderObject, fragShaderObject);
+    s_shaderArabesque = createProgramObject(vertShaderObject, fragShaderObject);
+
+    glDeleteShader(vertShaderObject);
+    glDeleteShader(fragShaderObject);
+
+
+    vertShaderObject = createShaderObject("playgrounds/AudioVisualizer/Assets/Shaders/Font.vsh", GL_VERTEX_SHADER);
+    error();
+    fragShaderObject = createShaderObject("playgrounds/AudioVisualizer/Assets/Shaders/Font.fsh", GL_FRAGMENT_SHADER);
+    error();
+
+    glReleaseShaderCompiler();
+
+    s_shaderFont = createProgramObject(vertShaderObject, fragShaderObject);
 
     glDeleteShader(vertShaderObject);
     glDeleteShader(fragShaderObject);
@@ -480,8 +574,11 @@ static void loadShaders() {
 
 static void unloadShaders() {
     fputs("unloadShaders\n", stderr);
-    glDeleteProgram(s_activeShader.programObject);
-    s_activeShader.programObject = 0;
+    glDeleteProgram(s_shaderArabesque.programObject);
+    s_shaderArabesque.programObject = 0;
+    error();
+    glDeleteProgram(s_shaderFont.programObject);
+    s_shaderFont.programObject = 0;
     error();
 }
 
@@ -492,15 +589,18 @@ static void unloadShaders() {
 
 
 static void loadTextures() {
-    s_texture = createTextureObject("Arabesque/Assets/Textures/CircleMip.etc1", GL_ETC1_RGB8_OES);
+    s_textureCircle = createTextureObject("playgrounds/AudioVisualizer/Assets/Textures/CircleMip.etc1", GL_ETC1_RGB8_OES);
+    s_textureFont = createTextureObject("playgrounds/AudioVisualizer/Assets/Textures/Vera512.raw", GL_LUMINANCE);
 }
 
 
 
 static void unloadTextures() {
     fputs("unloadTextures\n", stderr);
-    glDeleteTextures(1, &s_texture);
-    s_texture = 0;
+    glDeleteTextures(1, &s_textureCircle);
+    s_textureCircle = 0;
+    glDeleteTextures(1, &s_textureFont);
+    s_textureFont = 0;
     error();
 }
 
@@ -559,12 +659,13 @@ static void destroyFrameBufferObject(FrameBufferObject_t *const in_out_fbo) {
 
 
 
-GLES2Playground_t e_playgroundArabesque = {
-    .name = "Arabesque",
+GLES2Playground_t e_playgroundAudioVisualizer = {
+    .name = "AudioVisualizer",
     .init = init,
     .deinit = deinit,
     .update = update,
     .draw = draw,
     .setIdle = setIdle,
-    .commitData = commitData
+    .commitData = commitData,
+    .setString = setString
 };

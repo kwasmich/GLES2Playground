@@ -10,7 +10,7 @@
 
 #include "globaltime.h"
 #include "OpenGLES2Core.h"
-#include "playground.h"
+#include "playgrounds/playground.h"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>

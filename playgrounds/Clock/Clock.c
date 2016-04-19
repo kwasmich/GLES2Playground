@@ -6,13 +6,13 @@
 //
 //
 
-#include "../playground.h"
+#include "playgrounds/playground.h"
 
-#include "../colorspace.h"
-#include "../globaltime.h"
-#include "../Math3D.h"
-#include "../OpenGLES2Core.h"
-#include "../noise.h"
+#include "colorspace.h"
+#include "globaltime.h"
+#include "Math3D.h"
+#include "OpenGLES2Core.h"
+#include "noise.h"
 
 #include <assert.h>
 #include <iso646.h>
@@ -166,9 +166,9 @@ static void deinit() {
 
 
 static void loadShaders() {
-    GLuint vertShaderObject = createShaderObject("Clock/Assets/Shaders/Clock.vsh", GL_VERTEX_SHADER);
+    GLuint vertShaderObject = createShaderObject("playgrounds/Clock/Assets/Shaders/Clock.vsh", GL_VERTEX_SHADER);
     error();
-    GLuint fragShaderObject = createShaderObject("Clock/Assets/Shaders/Clock.fsh", GL_FRAGMENT_SHADER);
+    GLuint fragShaderObject = createShaderObject("playgrounds/Clock/Assets/Shaders/Clock.fsh", GL_FRAGMENT_SHADER);
     error();
 
     glReleaseShaderCompiler();
@@ -195,19 +195,19 @@ static void unloadShaders() {
 
 
 static void loadTextures() {
-    s_textureClockBase = createTextureObject("Clock/Assets/Textures/Base.raw", GL_LUMINANCE);
+    s_textureClockBase = createTextureObject("playgrounds/Clock/Assets/Textures/Base.raw", GL_LUMINANCE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    s_textureClockHour = createTextureObject("Clock/Assets/Textures/Hour.raw", GL_LUMINANCE);
+    s_textureClockHour = createTextureObject("playgrounds/Clock/Assets/Textures/Hour.raw", GL_LUMINANCE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    s_textureClockMinute = createTextureObject("Clock/Assets/Textures/Minute.raw", GL_LUMINANCE);
+    s_textureClockMinute = createTextureObject("playgrounds/Clock/Assets/Textures/Minute.raw", GL_LUMINANCE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    s_textureClockLine = createTextureObject("Clock/Assets/Textures/Line.raw", GL_LUMINANCE);
+    s_textureClockLine = createTextureObject("playgrounds/Clock/Assets/Textures/Line.raw", GL_LUMINANCE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    s_textureClockArrow = createTextureObject("Clock/Assets/Textures/Arrow.raw", GL_LUMINANCE);
+    s_textureClockArrow = createTextureObject("playgrounds/Clock/Assets/Textures/Arrow.raw", GL_LUMINANCE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }

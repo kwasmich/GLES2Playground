@@ -6,14 +6,14 @@
 //
 //
 
-#include "../playground.h"
+#include "playgrounds/playground.h"
 
-#include "../colorspace.h"
-#include "../FreeType3D.h"
-#include "../globaltime.h"
-#include "../Math3D.h"
-#include "../noise.h"
-#include "../OpenGLES2Core.h"
+#include "colorspace.h"
+#include "FreeType3D.h"
+#include "globaltime.h"
+#include "Math3D.h"
+#include "noise.h"
+#include "OpenGLES2Core.h"
 
 #include <assert.h>
 #include <iso646.h>
@@ -71,7 +71,7 @@ static void init(const int in_WIDTH, const int in_HEIGHT) {
     loadTextures();
 
     int rawSize = 0;
-    s_fontMap = (ft3dFontMap_t *)rawFromFileContents("Font/Assets/Vera512.map", false, &rawSize);
+    s_fontMap = (ft3dFontMap_t *)rawFromFileContents("playgrounds/Font/Assets/Vera512.map", false, &rawSize);
     s_fontMapSize = rawSize / sizeof(ft3dFontMap_t);
 
     glClearColor(0.0f, 0.5f, 0.0f, 0.75f);
@@ -135,9 +135,9 @@ static void deinit() {
 
 
 static void loadShaders() {
-    GLuint vertShaderObject = createShaderObject("Font/Assets/Shaders/Font.vsh", GL_VERTEX_SHADER);
+    GLuint vertShaderObject = createShaderObject("playgrounds/Font/Assets/Shaders/Font.vsh", GL_VERTEX_SHADER);
     error();
-    GLuint fragShaderObject = createShaderObject("Font/Assets/Shaders/Font.fsh", GL_FRAGMENT_SHADER);
+    GLuint fragShaderObject = createShaderObject("playgrounds/Font/Assets/Shaders/Font.fsh", GL_FRAGMENT_SHADER);
     error();
 
     glReleaseShaderCompiler();
@@ -164,9 +164,9 @@ static void unloadShaders() {
 
 
 static void loadTextures() {
-    s_textureFont = createTextureObject("Font/Assets/Textures/Vera512.raw", GL_LUMINANCE);
-    //s_textureFont = createTextureObject( "Font/Assets/Textures/checkboard256.raw", GL_LUMINANCE );
-    //s_textureFont = createTextureObject( "Arabesque/Assets/Textures/CircleMip.etc1", GL_ETC1_RGB8_OES );
+    s_textureFont = createTextureObject("playgrounds/Font/Assets/Textures/Vera512.raw", GL_LUMINANCE);
+    //s_textureFont = createTextureObject( "playgrounds/Font/Assets/Textures/checkboard256.raw", GL_LUMINANCE );
+    //s_textureFont = createTextureObject( "playgrounds/Arabesque/Assets/Textures/CircleMip.etc1", GL_ETC1_RGB8_OES );
 }
 
 
